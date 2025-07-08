@@ -1,10 +1,8 @@
-# 2025 Griffin Innovations Robot Code
+# 2026 Griffin Innovations Robot Code
 ## Future additions
 
 ### Bugfixes
-- [x] Test/fix autonomous driving with robot rotation
-- [x] Fix gyroscope logic so it doesn't need to be zeroed at the start of teleop
-- [x] Ensure gyroscope is being read correctly in auto
+- [ ] Fix arm commands so they actually run
 ### Features coming soon
 - [x] Semi autonomous control in teleop
     - [x] Robot pose from Apriltags
@@ -13,16 +11,8 @@
         - [x] Trained neural network detection pipeline
         - [ ] Dynamic path constraints based on obstacle detection
         - [ ] Obstacle avoidance modes for different types of obstacles, alliance color, robot location and target
-    - [x] SmartDashboard control interface to select positions
-    - [x] Locate and drive to algae with neural processing (untested)
-    - [x] Limelight pipeline switching (we only have one limelight and have to make the most of it)
-    - [x] Manual drive override (if semi auto ever craps the bed)
-- [x] PID tuning and position control for lift and intakes
-- [x] More commands for lift and intakes for autonomous
-- [x] Rework subsystems to account for recent hardware design changes
-- [x] Better control interface (move some controls over to smartdashboard)
-- [x] Build autos from smartdashboard
-- [x] Option to use premade autos
-- [ ] Better way of selecting positions for semi autonomous
-- [x] Barge algae in auto
-- [x] Climb controls
+- [ ] Better way of selecting positions for semi autonomous (touchscreen control panel)?
+- [ ] AdvantageScope & AdvantageKit or Elastic dashboard for better telemetry
+- [ ] Swerve drive (?)
+### Tasks
+- [ ] Investigate possibility of using an AI model running on driver station computer to drive robot
