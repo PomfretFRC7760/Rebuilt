@@ -12,7 +12,8 @@
         - [ ] Dynamic path constraints based on obstacle detection
         - [ ] Obstacle avoidance modes for different types of obstacles, alliance color, robot location and target
 - [ ] Better way of selecting positions for semi autonomous (touchscreen control panel)?
-- [ ] AdvantageScope & AdvantageKit or Elastic dashboard for better telemetry
+- [ ] AdvantageScope or Elastic dashboard for better telemetry
+- [ ] AdvantageKit logging
 - [ ] Swerve drive (?)
 ### Tasks
 - [ ] Investigate possibility of using an AI model running on driver station computer to drive robot
