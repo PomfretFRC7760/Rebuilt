@@ -2,7 +2,7 @@
 ## Future additions
 
 ### Bugfixes
-- [ ] Fix arm commands so they actually run
+- [ ] Fix subsystem commands so they actually run
 ### Subsystems to add
 - [ ] Shooter/Intake
 - [ ] Climb
