@@ -84,11 +84,7 @@ public class DriveCommand extends Command {
     }
 
     // Drive based on selected mode
-    if (robotCentricMode) {
-      driveSubsystem.driveRobotCentric(ySpeed.getAsDouble(), xSpeed.getAsDouble(), zRotation.getAsDouble());
-    } else {
-      driveSubsystem.driveRobot(ySpeed.getAsDouble(), xSpeed.getAsDouble(), zRotation.getAsDouble());
-    }
+    driveSubsystem.driveRobot(xSpeed.getAsDouble(), zRotation.getAsDouble());
 
     // Display selected pose
     Pose2d selectedPose = locationChooser.selectCoralStation();
