@@ -25,7 +25,7 @@ import frc.robot.commands.AlgaeLocatorCommand;
 
 public class DriveCommand extends Command {
   private final DoubleSupplier speed;
-  private final DoubleSupplier zRotation;
+  private final DoubleSupplier rotation;
   private final BooleanSupplier robotCentric;
   private final BooleanSupplier abortAuto;
   private final CANDriveSubsystem driveSubsystem;
@@ -47,13 +47,13 @@ public class DriveCommand extends Command {
       Units.degreesToRadians(540), Units.degreesToRadians(720)
   );
 
-  public DriveCommand(DoubleSupplier speed, DoubleSupplier zRotation, 
+  public DriveCommand(DoubleSupplier speed, DoubleSupplier rotation, 
                       BooleanSupplier robotCentric, BooleanSupplier abortAuto, 
                       CANDriveSubsystem driveSubsystem, LocationChooser locationChooser, 
                       AutoConfig autoConfig, LiftSubsystem liftSubsystem, 
                       LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, AlgaeLocatorCommand algaeLocatorCommand, LiftRotationSubsystem liftRotationSubsystem) {
     this.speed = speed;
-    this.zRotation = zRotation;
+    this.rotation = rotation;
     this.robotCentric = robotCentric;
     this.abortAuto = abortAuto;
     this.driveSubsystem = driveSubsystem;
@@ -77,7 +77,7 @@ public class DriveCommand extends Command {
     lastRobotCentricButtonState = currentButtonState;  // Update last state
 
     // Drive based on selected mode
-    driveSubsystem.driveRobot(speed.getAsDouble(), zRotation.getAsDouble());
+    driveSubsystem.driveRobot(speed.getAsDouble(), rotation.getAsDouble());
 
     // Display selected pose
     Pose2d selectedPose = locationChooser.selectCoralStation();
