@@ -164,8 +164,8 @@ public class CANDriveSubsystem extends SubsystemBase {
         );
     }
 
-    public void driveRobot(double xSpeed, double zRotation) {
-        differentialDrive.arcadeDrive(xSpeed, -zRotation);
+    public void driveRobot(double speed, double zRotation) {
+        differentialDrive.arcadeDrive(speed, -zRotation);
     }
 
     public Pose2d getPose() {

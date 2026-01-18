@@ -24,8 +24,7 @@ import java.util.function.DoubleSupplier;
 import frc.robot.commands.AlgaeLocatorCommand;
 
 public class DriveCommand extends Command {
-  private final DoubleSupplier ySpeed;
-  private final DoubleSupplier xSpeed;
+  private final DoubleSupplier speed;
   private final DoubleSupplier zRotation;
   private final BooleanSupplier robotCentric;
   private final BooleanSupplier abortAuto;
@@ -48,13 +47,12 @@ public class DriveCommand extends Command {
       Units.degreesToRadians(540), Units.degreesToRadians(720)
   );
 
-  public DriveCommand(DoubleSupplier ySpeed, DoubleSupplier xSpeed, DoubleSupplier zRotation, 
+  public DriveCommand(DoubleSupplier speed, DoubleSupplier zRotation, 
                       BooleanSupplier robotCentric, BooleanSupplier abortAuto, 
                       CANDriveSubsystem driveSubsystem, LocationChooser locationChooser, 
                       AutoConfig autoConfig, LiftSubsystem liftSubsystem, 
                       LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, AlgaeLocatorCommand algaeLocatorCommand, LiftRotationSubsystem liftRotationSubsystem) {
-    this.ySpeed = ySpeed;
-    this.xSpeed = xSpeed;
+    this.speed = speed;
     this.zRotation = zRotation;
     this.robotCentric = robotCentric;
     this.abortAuto = abortAuto;
@@ -78,13 +76,8 @@ public class DriveCommand extends Command {
     }
     lastRobotCentricButtonState = currentButtonState;  // Update last state
 
-    // Cancel active path command if joystick moves past threshold
-    if ((Math.abs(ySpeed.getAsDouble()) > 0.25 || Math.abs(xSpeed.getAsDouble()) > 0.25 || Math.abs(zRotation.getAsDouble()) > 0.25) || abortAuto.getAsBoolean()) {
-      autoAbort();
-    }
-
     // Drive based on selected mode
-    driveSubsystem.driveRobot(xSpeed.getAsDouble(), zRotation.getAsDouble());
+    driveSubsystem.driveRobot(speed.getAsDouble(), zRotation.getAsDouble());
 
     // Display selected pose
     Pose2d selectedPose = locationChooser.selectCoralStation();

@@ -130,7 +130,6 @@ public class RobotContainer {
 
     driveCommand = new DriveCommand(
         () -> -driverController.getLeftY(),
-        () -> driverController.getLeftX(),
         () -> -driverController.getRightX(),
         () -> driverController.y().getAsBoolean(), () -> driverController.x().getAsBoolean(),
         driveSubsystem,
