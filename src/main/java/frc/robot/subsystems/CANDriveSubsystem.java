@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,8 +20,8 @@ public class CANDriveSubsystem extends SubsystemBase {
     // Motors
     private final SparkFlex leftLeader  = new SparkFlex(1, MotorType.kBrushless);
     private final SparkFlex leftFollower = new SparkFlex(2, MotorType.kBrushless);
-    private final SparkFlex rightLeader = new SparkFlex(4, MotorType.kBrushless);
-    private final SparkFlex rightFollower = new SparkFlex(1, MotorType.kBrushless);
+    private final SparkFlex rightLeader = new SparkFlex(3, MotorType.kBrushless);
+    private final SparkMax rightFollower = new SparkMax(4, MotorType.kBrushless);
 
     
 
@@ -49,6 +50,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
         // Invert ONE side
         rightLeader.setInverted(true);
+        leftLeader.setInverted(false);
 
         differentialDrive = new DifferentialDrive(leftLeader, rightLeader);
         differentialDrive.setSafetyEnabled(false);
@@ -70,7 +72,7 @@ public class CANDriveSubsystem extends SubsystemBase {
                 .velocityFF(1.0 / 6784)
                 .outputRange(-1, 1);
         SparkFlexConfig leftFollowerConfig = new SparkFlexConfig();
-        SparkFlexConfig rightFollowerConfig = new SparkFlexConfig();
+        SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
         // Apply the global config and set the leader SPARK for follower mode
         leftFollowerConfig
             .apply(configMotor)
@@ -165,7 +167,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     }
 
     public void driveRobot(double speed, double rotation) {
-        differentialDrive.arcadeDrive(speed, -rotation);
+        differentialDrive.arcadeDrive(speed, rotation);
     }
 
     public Pose2d getPose() {
