@@ -21,7 +21,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     private final SparkFlex leftLeader  = new SparkFlex(1, MotorType.kBrushless);
     private final SparkFlex leftFollower = new SparkFlex(2, MotorType.kBrushless);
     private final SparkFlex rightLeader = new SparkFlex(3, MotorType.kBrushless);
-    private final SparkMax rightFollower = new SparkMax(4, MotorType.kBrushless);
+    private final SparkMax rightFollower = new SparkMax(4, MotorType.kBrushless); //temporary fix because our spark flexes keep shitting themselves
 
     
 
