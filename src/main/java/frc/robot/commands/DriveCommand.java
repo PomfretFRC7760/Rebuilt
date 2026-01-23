@@ -21,7 +21,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import frc.robot.commands.AlgaeLocatorCommand;
+import frc.robot.commands.FuelLocatorCommand;
 
 public class DriveCommand extends Command {
   private final DoubleSupplier speed;
@@ -35,7 +35,7 @@ public class DriveCommand extends Command {
   private final LiftIntakeRollerSubsystem liftIntakeRollerSubsystem;
   private final LiftRotationSubsystem liftRotationSubsystem;
 
-  private final AlgaeLocatorCommand algaeLocatorCommand;
+  private final FuelLocatorCommand fuelLocatorCommand;
   
   private boolean robotCentricMode = false;
   private boolean lastRobotCentricButtonState = false;
@@ -51,7 +51,7 @@ public class DriveCommand extends Command {
                       BooleanSupplier robotCentric, BooleanSupplier abortAuto, 
                       CANDriveSubsystem driveSubsystem, LocationChooser locationChooser, 
                       AutoConfig autoConfig, LiftSubsystem liftSubsystem, 
-                      LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, AlgaeLocatorCommand algaeLocatorCommand, LiftRotationSubsystem liftRotationSubsystem) {
+                      LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, FuelLocatorCommand fuelLocatorCommand, LiftRotationSubsystem liftRotationSubsystem) {
     this.speed = speed;
     this.rotation = rotation;
     this.robotCentric = robotCentric;
@@ -61,7 +61,7 @@ public class DriveCommand extends Command {
     this.autoConfig = autoConfig;
     this.liftSubsystem = liftSubsystem;
     this.liftIntakeRollerSubsystem = liftIntakeRollerSubsystem;
-    this.algaeLocatorCommand = algaeLocatorCommand;
+    this.fuelLocatorCommand = fuelLocatorCommand;
     this.liftRotationSubsystem = liftRotationSubsystem;
 
     addRequirements(this.driveSubsystem, this.liftSubsystem, this.liftIntakeRollerSubsystem, this.liftRotationSubsystem);
@@ -80,16 +80,16 @@ public class DriveCommand extends Command {
     driveSubsystem.driveRobot(speed.getAsDouble(), rotation.getAsDouble());
 
     // Display selected pose
-    Pose2d selectedPose = locationChooser.selectCoralStation();
+    Pose2d selectedPose = locationChooser.selectFuelLocation();
     SmartDashboard.putString("Selected Robot Pose", 
     (selectedPose != null) ? selectedPose.toString() : "None");
-    SmartDashboard.putBoolean("target found", algaeLocatorCommand.validateTarget());
-    Pose2d algaePose = algaeLocatorCommand.getAlgaePose();
-    SmartDashboard.putString("Algae Pose", algaePose != null ? algaePose.toString() : "Unacceptable");
+    SmartDashboard.putBoolean("target found", fuelLocatorCommand.validateTarget());
+    Pose2d fuelPose = fuelLocatorCommand.getFuelPose();
+    SmartDashboard.putString("Fuel Pose", fuelPose != null ? fuelPose.toString() : "Unacceptable");
   }
 
   public void driveToSelectedPose() {
-    Pose2d selectedPose = locationChooser.selectCoralStation();
+    Pose2d selectedPose = locationChooser.selectFuelLocation();
 
     if (selectedPose == null) {
         return;
@@ -102,12 +102,12 @@ public class DriveCommand extends Command {
     CommandScheduler.getInstance().schedule(activePathfindingCommand);
   }
 
-  public void driveToAlgae(){
-    if (algaeLocatorCommand.getAlgaePose() != null) {
-      Pose2d algaePose = algaeLocatorCommand.getAlgaePose();
-      pathfindingCommand = createPathfindingCommand(algaePose);
+  public void driveToFuel(){
+    if (fuelLocatorCommand.getFuelPose() != null) {
+      Pose2d fuelPose = fuelLocatorCommand.getFuelPose();
+      pathfindingCommand = createPathfindingCommand(fuelPose);
 
-      activePathfindingCommand = pathfindingCommand.andThen(simulationPoseReset(algaePose));
+      activePathfindingCommand = pathfindingCommand.andThen(simulationPoseReset(fuelPose));
 
       CommandScheduler.getInstance().schedule(activePathfindingCommand);
     }
@@ -128,50 +128,50 @@ public class DriveCommand extends Command {
     return AutoBuilder.pathfindToPose(targetPose, constraints, 0.0).andThen(simulationPoseReset(targetPose));
   }
 
-  // Generic auto coral method
-  private Command autoCoral(Pose2d coralPose, Pose2d stationPose, int liftLevel, boolean enabled, int pickup) {
+  // Generic auto fuel method
+  private Command autoFuel(Pose2d fuelPose, Pose2d stationPose, int liftLevel, boolean enabled, int pickup) {
     if (!enabled) return Commands.none();
       if (stationPose == null) {
-        Command pathToCoral = createPathfindingCommand(coralPose);
+        Command pathToFuel = createPathfindingCommand(fuelPose);
         Command liftCommand =  new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
-        Command jettisonCommand = new CoralJettison(liftIntakeRollerSubsystem);
+        Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem);
         Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
-        Command coralSequence = pathToCoral
+        Command fuelSequence = pathToFuel
                                   .andThen(liftCommand)
                                   .andThen(jettisonCommand)
                                   .andThen(resetLift);
 
-        return coralSequence;
+        return fuelSequence;
       }
       else {
-        Command pathToCoral = createPathfindingCommand(coralPose);
+        Command pathToFuel = createPathfindingCommand(fuelPose);
         Command pathToStation = createPathfindingCommand(stationPose);
         Command liftCommand =  new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
-        Command intakeCommand = new  CoralIntake(liftIntakeRollerSubsystem);
-        Command jettisonCommand = new CoralJettison(liftIntakeRollerSubsystem);
+        Command intakeCommand = new  FuelIntake(liftIntakeRollerSubsystem);
+        Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem);
         Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
-        Command coralSequence = pathToStation
+        Command fuelSequence = pathToStation
                                   .andThen(intakeCommand)
-                                  .andThen(pathToCoral)
+                                  .andThen(pathToFuel)
                                   .andThen(liftCommand)
                                   .andThen(jettisonCommand)
                                   .andThen(resetLift);
 
-        return coralSequence;
+        return fuelSequence;
       }
       
   }
 
 
   public Command buildFullAutoSequence() {
-    Command coral1 = autoCoral(autoConfig.coral1Pose, null, autoConfig.lift1, autoConfig.enable1, autoConfig.pickup2);
-    Command coral2 = autoCoral(autoConfig.coral2Pose, autoConfig.station2Pose, autoConfig.lift2, autoConfig.enable2, autoConfig.pickup3);
-    Command coral3 = autoCoral(autoConfig.coral3Pose, autoConfig.station3Pose, autoConfig.lift3, autoConfig.enable3, autoConfig.pickup4);
-    Command coral4 = autoCoral(autoConfig.coral4Pose, autoConfig.station4Pose, autoConfig.lift4, autoConfig.enable4, 6);
+    Command fuel1 = autoFuel(autoConfig.fuel1Pose, null, autoConfig.lift1, autoConfig.enable1, autoConfig.pickup2);
+    Command fuel2 = autoFuel(autoConfig.fuel2Pose, autoConfig.station2Pose, autoConfig.lift2, autoConfig.enable2, autoConfig.pickup3);
+    Command fuel3 = autoFuel(autoConfig.fuel3Pose, autoConfig.station3Pose, autoConfig.lift3, autoConfig.enable3, autoConfig.pickup4);
+    Command fuel4 = autoFuel(autoConfig.fuel4Pose, autoConfig.station4Pose, autoConfig.lift4, autoConfig.enable4, 6);
   
-    return coral1.andThen(coral2).andThen(coral3).andThen(coral4);
+    return fuel1.andThen(fuel2).andThen(fuel3).andThen(fuel4);
   }
 
   public void autoAbort() {

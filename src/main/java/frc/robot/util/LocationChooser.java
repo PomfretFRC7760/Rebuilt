@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LocationChooser {
 
-    private final SendableChooser<ReefSticks> letterChooser = new SendableChooser<>();
+    private final SendableChooser<HubPositions> letterChooser = new SendableChooser<>();
 //    private final SendableChooser<Boolean> climbModeChooser = new SendableChooser<>();
     
     private final RobotContainer r;
@@ -18,11 +18,11 @@ public class LocationChooser {
         this.r = r;
 
         // Letter selection
-        for (ReefSticks reef : ReefSticks.values()) {
-            letterChooser.addOption(reef.name(), reef);
+        for (HubPositions hubPos : HubPositions.values()) {
+            letterChooser.addOption(hubPos.name(), hubPos);
         }
 
-        letterChooser.setDefaultOption("NONE", ReefSticks.NONE);
+        letterChooser.setDefaultOption("NONE", HubPositions.NONE);
 
         // Climb mode
         // climbModeChooser.setDefaultOption("Off", false);
@@ -34,18 +34,18 @@ public class LocationChooser {
         //SmartDashboard.putData("Climb Mode", climbModeChooser);
     }
 
-    public static enum ReefSticks {
+    public static enum HubPositions {
         A, B, C, D, E, F, G, H, I, J, K, L, AB, CD, EF, GH, IJ, KL, PROCESSOR, BARGE, LEFT, RIGHT, CLOSEST, NONE
     }
 
-    public Pose2d selectCoralStation() {
+    public Pose2d selectFuelLocation() {
         switch (letterChooser.getSelected()) {
             case LEFT:
                 return Locations.getLeftGatherStationFar();
             case RIGHT:
                 return Locations.getRightGatherStationFar();
             case CLOSEST:
-                return selectClosestCoralStation();
+                return selectClosestFuelLocation();
 
             case PROCESSOR:
                 return Locations.getProcLoc();
@@ -54,21 +54,21 @@ public class LocationChooser {
                 return Locations.getBargeLoc();
 
             case AB, CD, EF, GH, IJ, KL:
-                return Locations.getAlgaeReefLocation(letterChooser.getSelected());
+                return Locations.getFuelLocation(letterChooser.getSelected());
 
             default:
-                return Locations.getReefLocation(letterChooser.getSelected());
+                return Locations.getHubLocation(letterChooser.getSelected());
         }
     }
 
     public Rotation2d selectGatherAngle() {
-        return selectCoralStation().getRotation().plus(Rotation2d.fromDegrees(180));
+        return selectFuelLocation().getRotation().plus(Rotation2d.fromDegrees(180));
     }
 
     public Rotation2d getAlignAngle() {
-        ReefSticks selectedReefPos = letterChooser.getSelected();
+        HubPositions selectedHubPos = letterChooser.getSelected();
         Rotation2d scoringPosition;
-        switch (selectedReefPos) {
+        switch (selectedHubPos) {
             case A:
             case B:
                 scoringPosition = Rotation2d.fromDegrees(0);
@@ -130,7 +130,7 @@ public class LocationChooser {
         return Locations.isBlue() ? scoringPosition : scoringPosition.plus(Rotation2d.fromDegrees(180));
     }
 
-    public Pose2d selectClosestCoralStation() {
+    public Pose2d selectClosestFuelLocation() {
         return r.driveSubsystem.getPose().nearest(
             List.of(Locations.getLeftGatherStationFar(), Locations.getRightGatherStationFar())
         );

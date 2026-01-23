@@ -33,15 +33,15 @@ import frc.robot.commands.FloorRotationCommand;
 import frc.robot.commands.LiftRollerCommand;
 import frc.robot.commands.CameraCommand;
 import frc.robot.subsystems.CameraSubsystem;
-import frc.robot.commands.CoralJettison;
+import frc.robot.commands.FuelJettison;
 import frc.robot.commands.LimelightPoseReset; 
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.AutoConfig;
 import frc.robot.util.LocationChooser;
 import frc.robot.commands.LiftAutoPosition;
 import frc.robot.commands.LiftAndScore;
-import frc.robot.util.AlgaeLocator;
-import frc.robot.commands.AlgaeLocatorCommand;
+import frc.robot.util.FuelLocator;
+import frc.robot.commands.FuelLocatorCommand;
 import frc.robot.subsystems.LiftRotationSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.commands.ClimbCommand;
@@ -56,7 +56,7 @@ import frc.robot.commands.ClimbCommand;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final AlgaeLocator algaeLocator = new AlgaeLocator(this);
+  private final FuelLocator fuelLocator = new FuelLocator(this);
   private final FloorIntakeRollerSubsystem rollerSubsystem = new FloorIntakeRollerSubsystem();
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
 
@@ -71,11 +71,11 @@ public class RobotContainer {
 
   private final LiftIntakeRollerSubsystem liftIntakeRollerSubsystem = new LiftIntakeRollerSubsystem();
   private final CameraSubsystem cameraSubsystem = new CameraSubsystem();
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem(driveSubsystem, algaeLocator);
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(driveSubsystem, fuelLocator);
 
   public final DriveCommand driveCommand;
 
-  public final AlgaeLocatorCommand algaeLocatorCommand = new AlgaeLocatorCommand(visionSubsystem);
+  public final FuelLocatorCommand fuelLocatorCommand = new FuelLocatorCommand(visionSubsystem);
 
 
   private final LocationChooser locationChooser = new LocationChooser(this);
@@ -120,12 +120,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 4));
     NamedCommands.registerCommand("L4", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 5));
     NamedCommands.registerCommand("Human Player", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 6));
-    NamedCommands.registerCommand("Algae L2", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7));
-    NamedCommands.registerCommand("Algae L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8));
+    NamedCommands.registerCommand("Fuel L2", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7));
+    NamedCommands.registerCommand("Fuel L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8));
     NamedCommands.registerCommand("Barge", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 9));
     autoConfig = new AutoConfig(this);
 
-    NamedCommands.registerCommand("Jettison Coral", new CoralJettison(liftIntakeRollerSubsystem));
+    NamedCommands.registerCommand("Jettison Fuel", new FuelJettison(liftIntakeRollerSubsystem));
     configureBindings();
 
     driveCommand = new DriveCommand(
@@ -133,7 +133,7 @@ public class RobotContainer {
         () -> -driverController.getRightX(),
         () -> driverController.y().getAsBoolean(), () -> driverController.x().getAsBoolean(),
         driveSubsystem,
-        locationChooser, autoConfig, liftSubsystem, liftIntakeRollerSubsystem, algaeLocatorCommand, liftRotationSubsystem
+        locationChooser, autoConfig, liftSubsystem, liftIntakeRollerSubsystem, fuelLocatorCommand, liftRotationSubsystem
     );
     driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -193,19 +193,19 @@ public class RobotContainer {
     climbSubsystem.setDefaultCommand(climbCommand);
     SmartDashboard.putData("Reset pose with Limelight", new InstantCommand(() -> limelightPoseReset.resetPose()).ignoringDisable(true));
     SmartDashboard.putData("Enable lift manual control", new InstantCommand(() -> liftCommand.liftManualControlSwitch()));
-    SmartDashboard.putData("Enable algae intake manual control", new InstantCommand(() -> floorRotationCommand.enableManualControl()));
-    SmartDashboard.putData("Enable coral intake manual control", new InstantCommand(() -> liftCommand.coralManualControlSwitch()));
+    SmartDashboard.putData("Enable fuel intake manual control", new InstantCommand(() -> floorRotationCommand.enableManualControl()));
+    SmartDashboard.putData("Enable fuel intake manual control", new InstantCommand(() -> liftCommand.fuelManualControlSwitch()));
     SmartDashboard.putData("Abort semi-autonomous", new InstantCommand(() -> driveCommand.autoAbort()));
-    SmartDashboard.putData("Drive to algae", new InstantCommand(() -> driveCommand.driveToAlgae()));
+    SmartDashboard.putData("Drive to fuel", new InstantCommand(() -> driveCommand.driveToFuel()));
     SmartDashboard.putData("Apriltag pipeline", new InstantCommand(() -> visionSubsystem.setPipeline0()).ignoringDisable(true));
     SmartDashboard.putData("Neural network pipeline", new InstantCommand(() -> visionSubsystem.setPipeline1()).ignoringDisable(true));
     SmartDashboard.putData("Experimental neural network pipeline", new InstantCommand(() -> visionSubsystem.setPipeline2()).ignoringDisable(true));
-    SmartDashboard.putData("Reset algae intake encoder", new InstantCommand(() -> floorIntakeRotationSubsystem.resetEncoder()).ignoringDisable(true));
-    SmartDashboard.putData("Reset coral intake encoder", new InstantCommand(() -> liftRotationSubsystem.resetEncoder()).ignoringDisable(true));
+    SmartDashboard.putData("Reset fuel intake encoder", new InstantCommand(() -> floorIntakeRotationSubsystem.resetEncoder()).ignoringDisable(true));
+    SmartDashboard.putData("Reset fuel intake encoder", new InstantCommand(() -> liftRotationSubsystem.resetEncoder()).ignoringDisable(true));
   }
 
   public void updateSelectedPose() {
-    Pose2d currentPose = locationChooser.selectCoralStation(); // Get current selection
+    Pose2d currentPose = locationChooser.selectFuelLocation(); // Get current selection
 
     if (currentPose != null && !currentPose.equals(lastSelectedPose)) {
         lastSelectedPose = currentPose; // Update last pose

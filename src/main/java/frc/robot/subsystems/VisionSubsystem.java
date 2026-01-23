@@ -4,17 +4,17 @@ import java.util.Optional;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.util.AlgaeLocator;
+import frc.robot.util.FuelLocator;
 
 public class VisionSubsystem extends SubsystemBase {
 
     private final LimeLocalizationSubsystem limeF;
-    private final AlgaeLocator algaeLocator;
+    private final FuelLocator fuelLocator;
 
     // Constructor that takes a CANDriveSubsystem instance
-    public VisionSubsystem(CANDriveSubsystem driveSubsystem, AlgaeLocator algaeLocator) {
+    public VisionSubsystem(CANDriveSubsystem driveSubsystem, FuelLocator fuelLocator) {
         this.limeF = new LimeLocalizationSubsystem("", driveSubsystem);
-        this.algaeLocator = algaeLocator;
+        this.fuelLocator = fuelLocator;
     }
 
     public Pose2d limeFpose() {
@@ -34,11 +34,11 @@ public class VisionSubsystem extends SubsystemBase {
         LimelightHelpers.setPipelineIndex("",2);
     }
 
-    public Pose2d getAlgaePose() {
-        return algaeLocator.locateAlgae();
+    public Pose2d getFuelPose() {
+        return fuelLocator.locateFuel();
     }
 
     public boolean validateTarget(){
-        return algaeLocator.validateTarget();
+        return fuelLocator.validateTarget();
     }
 }

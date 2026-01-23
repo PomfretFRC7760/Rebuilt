@@ -71,7 +71,7 @@ public class FloorIntakeRotationSubsystem extends SubsystemBase {
     }
 
     public void updatePosition() {
-        SmartDashboard.putNumber("Algae intake motor position", encoder.getPosition());
+        SmartDashboard.putNumber("Fuel intake motor position", encoder.getPosition());
     }
 
     public double getPosition (){

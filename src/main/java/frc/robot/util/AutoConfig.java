@@ -13,10 +13,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class AutoConfig {
     public Pose2d startPose;
 
-    public Pose2d coral1Pose;
-    public Pose2d coral2Pose;
-    public Pose2d coral3Pose;
-    public Pose2d coral4Pose;
+    public Pose2d fuel1Pose;
+    public Pose2d fuel2Pose;
+    public Pose2d fuel3Pose;
+    public Pose2d fuel4Pose;
 
     public Pose2d station2Pose;
     public Pose2d station3Pose;
@@ -36,7 +36,7 @@ public class AutoConfig {
     public int pickup3;
     public int pickup4;
 
-    private final SendableChooser<ReefSticks> letterChooser = new SendableChooser<>();
+    private final SendableChooser<HubPositions> letterChooser = new SendableChooser<>();
     private final SendableChooser<Station> stationChooser = new SendableChooser<>();
     private final SendableChooser<Integer> liftChooser = new SendableChooser<>();
     private final SendableChooser<Integer> pickupChooser = new SendableChooser<>();
@@ -49,11 +49,11 @@ public class AutoConfig {
         this.r = r;
 
         // Letter selection
-        for (ReefSticks reef : ReefSticks.values()) {
-            letterChooser.addOption(reef.name(), reef);
+        for (HubPositions hubPos : HubPositions.values()) {
+            letterChooser.addOption(hubPos.name(), hubPos);
         }
 
-        letterChooser.setDefaultOption("A", ReefSticks.A);
+        letterChooser.setDefaultOption("A", HubPositions.A);
 
         for (Station station : Station.values()) {
             stationChooser.addOption(station.name(), station);
@@ -61,15 +61,15 @@ public class AutoConfig {
 
         stationChooser.setDefaultOption("CLOSEST", Station.CLOSEST);
 
-        liftChooser.setDefaultOption("CORAL L1", 2);
-        liftChooser.addOption("CORAL L2", 3);
-        liftChooser.addOption("CORAL L3", 4);
-        liftChooser.addOption("CORAL L4", 5);
+        liftChooser.setDefaultOption("FUEL L1", 2);
+        liftChooser.addOption("FUEL L2", 3);
+        liftChooser.addOption("FUEL L3", 4);
+        liftChooser.addOption("FUEL L4", 5);
         liftChooser.addOption("BARGE", 9);
 
-        pickupChooser.setDefaultOption("CORAL", 6);
-        pickupChooser.addOption("ALGAE L2", 7);
-        pickupChooser.addOption("ALGAE L3", 8);
+        pickupChooser.setDefaultOption("FUEL", 6);
+        pickupChooser.addOption("FUEL L2", 7);
+        pickupChooser.addOption("FUEL L3", 8);
 
         useCommand.setDefaultOption("YES", true);
         useCommand.addOption("NO", false);
@@ -89,15 +89,15 @@ public class AutoConfig {
         SmartDashboard.putData("Use Command", useCommand);
         SmartDashboard.putData("Start", startChooser);
 
-        SmartDashboard.putData("Save Coral 1 (Station is ignored, preload coral)", new InstantCommand(() -> saveSelection1()).ignoringDisable(true));
-        SmartDashboard.putData("Save Coral 2", new InstantCommand(() -> saveSelection2()).ignoringDisable(true));
-        SmartDashboard.putData("Save Coral 3", new InstantCommand(() -> saveSelection3()).ignoringDisable(true));
-        SmartDashboard.putData("Save Coral 4", new InstantCommand(() -> saveSelection4()).ignoringDisable(true));
+        SmartDashboard.putData("Save Fuel 1 (Station is ignored, preload fuel)", new InstantCommand(() -> saveSelection1()).ignoringDisable(true));
+        SmartDashboard.putData("Save Fuel 2", new InstantCommand(() -> saveSelection2()).ignoringDisable(true));
+        SmartDashboard.putData("Save Fuel 3", new InstantCommand(() -> saveSelection3()).ignoringDisable(true));
+        SmartDashboard.putData("Save Fuel 4", new InstantCommand(() -> saveSelection4()).ignoringDisable(true));
         SmartDashboard.putData("Save Starting Pose", new InstantCommand(() -> saveStartingPose()).ignoringDisable(true));
 
     }
 
-    public static enum ReefSticks {
+    public static enum HubPositions {
         A, B, C, D, E, F, G, H, I, J, K, L, BARGE
     }
 
@@ -116,11 +116,11 @@ public class AutoConfig {
             case RIGHT:
                 return AutoLocation.getRightGatherStationFar();
             case CLOSEST:
-                return selectClosestCoralStation();
+                return selectClosestFuelLocation();
             case AB, CD, EF, GH, IJ, KL:
-                return AutoLocation.getAlgaeReefLocation(stationChooser.getSelected());
+                return AutoLocation.getFuelLocation(stationChooser.getSelected());
             default:
-                return selectClosestCoralStation();
+                return selectClosestFuelLocation();
         }
     }
 
@@ -129,24 +129,24 @@ public class AutoConfig {
             case BARGE:
                 return AutoLocation.getBargeLoc();
             default:
-                return AutoLocation.getReefLocation(letterChooser.getSelected());
+                return AutoLocation.getHubLocation(letterChooser.getSelected());
         }
     }
 
-    public Pose2d selectClosestCoralStation() {
+    public Pose2d selectClosestFuelLocation() {
         return r.driveSubsystem.getPose().nearest(
             List.of(AutoLocation.getLeftGatherStationFar(), AutoLocation.getRightGatherStationFar())
         );
     }
 
     public void saveSelection1() {
-        coral1Pose = scoreSelecton();
+        fuel1Pose = scoreSelecton();
         lift1 = liftChooser.getSelected();
         enable1 = useCommand.getSelected();
     }
 
     public void saveSelection2() {
-        coral2Pose = scoreSelecton();
+        fuel2Pose = scoreSelecton();
         lift2 = liftChooser.getSelected();
         enable2 = useCommand.getSelected();
         station2Pose = stationSelection();
@@ -154,7 +154,7 @@ public class AutoConfig {
     }
 
     public void saveSelection3() {
-        coral3Pose = scoreSelecton();
+        fuel3Pose = scoreSelecton();
         lift3 = liftChooser.getSelected();
         enable3 = useCommand.getSelected();
         station3Pose = stationSelection();
@@ -162,7 +162,7 @@ public class AutoConfig {
     }
 
     public void saveSelection4() {
-        coral4Pose = scoreSelecton();
+        fuel4Pose = scoreSelecton();
         lift4 = liftChooser.getSelected();
         enable4 = useCommand.getSelected();
         station4Pose = stationSelection();

@@ -19,9 +19,9 @@ public class LiftCommand extends Command {
     private final BooleanSupplier leftShoulder;
     private final LiftRotationSubsystem liftRotationSubsystem;
     private boolean liftManualControlEnabled = false;
-    private boolean coralManualControlEnabled = false;
+    private boolean fuelManualControlEnabled = false;
 
-    private final SendableChooser<Boolean> algae = new SendableChooser<>();
+    private final SendableChooser<Boolean> fuelMode = new SendableChooser<>();
     public LiftCommand(BooleanSupplier dPadUp, BooleanSupplier dPadDown, BooleanSupplier dPadLeft, BooleanSupplier dPadRight, BooleanSupplier xButton, BooleanSupplier leftShoulder, DoubleSupplier rightStickY, LiftSubsystem liftSubsystem, LiftRotationSubsystem liftRotationSubsystem) {
         this.dPadUp = dPadUp;
         this.dPadDown = dPadDown;
@@ -39,9 +39,8 @@ public class LiftCommand extends Command {
 
     @Override
     public void initialize() {
-        algae.setDefaultOption("Coral", false);
-        algae.addOption("Algae", true);
-        SmartDashboard.putData("Scoring mode", algae);
+        fuelMode.setDefaultOption("Fuel", false);
+        SmartDashboard.putData("Scoring mode", fuelMode);
     }
 
     @Override
@@ -50,21 +49,21 @@ public class LiftCommand extends Command {
         // Toggle manual control mode
         if (dPadDown.getAsBoolean() || dPadUp.getAsBoolean() || dPadLeft.getAsBoolean() || dPadRight.getAsBoolean() || xButton.getAsBoolean() || leftShoulder.getAsBoolean()) {
             liftManualControlEnabled = false;
-            coralManualControlEnabled = false;
+            fuelManualControlEnabled = false;
         }
 
         if (liftManualControlEnabled) {
             // Manual control mode
             liftSubsystem.manualOverrideControl(speed);
         }
-        else if (coralManualControlEnabled) {
+        else if (fuelManualControlEnabled) {
             // Manual control mode
             liftRotationSubsystem.manualControl(speed);
-        } else if (liftManualControlEnabled && coralManualControlEnabled) {
+        } else if (liftManualControlEnabled && fuelManualControlEnabled) {
             liftSubsystem.manualOverrideControl(speed);
             liftRotationSubsystem.manualControl(speed);
         } else {
-            if (algae.getSelected()) {
+            if (fuelMode.getSelected()) {
                 if (dPadUp.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7).schedule();
                 }
@@ -115,7 +114,7 @@ public class LiftCommand extends Command {
     public void liftManualControlSwitch() {
         liftManualControlEnabled = true;
     }
-    public void coralManualControlSwitch() {
-        coralManualControlEnabled = true;
+    public void fuelManualControlSwitch() {
+        fuelManualControlEnabled = true;
     }
 }

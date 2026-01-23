@@ -70,6 +70,6 @@ public class LiftRotationSubsystem extends SubsystemBase {
     }
 
     public void updatePosition() {
-        SmartDashboard.putNumber("Coral intake motor position", encoder.getPosition());
+        SmartDashboard.putNumber("Fuel intake motor position", encoder.getPosition());
     }
 }

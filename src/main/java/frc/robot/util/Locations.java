@@ -38,21 +38,21 @@ public class Locations {
                     Units.inchesToMeters(16),
                     Rotation2d.kZero);
 
-    public static Transform2d halfRobotCoralRight =
+    public static Transform2d halfRobotFuelRight =
             new Transform2d(
                     robotLength / 2.0 + Units.inchesToMeters(3.25),
                     Units.inchesToMeters(5.5),
                     Rotation2d.kZero);
-    public static Transform2d halfRobotCoralLeft =
+    public static Transform2d halfRobotFuelLeft =
             new Transform2d(
                     robotLength / 2.0 + Units.inchesToMeters(3.5),
                     Units.inchesToMeters(-8),
                     Rotation2d.kZero);
 
-    public static Transform2d halfRobotAlgae =
+    public static Transform2d halfRobotFuel =
             new Transform2d(robotLength / 2.0 + Units.inchesToMeters(6), 0, Rotation2d.kZero);
 
-    public static Transform2d halfRobotCoralLevel1 =
+    public static Transform2d halfRobotFuelLevel1 =
             new Transform2d(
                     robotLength / 2.0 + Units.inchesToMeters(7.5),
                     Units.inchesToMeters(0),
@@ -83,7 +83,7 @@ public class Locations {
         }
     }
 
-    public static Translation2d getReef() {
+    public static Translation2d getHub() {
         Pose2d front, back;
         if (isBlue()) {
             front = tags.getTagPose(18).get().toPose2d();
@@ -97,123 +97,123 @@ public class Locations {
     }
 
     // everyone hates this
-    public static Pose2d getReefLocation(LocationChooser.ReefSticks position) {
+    public static Pose2d getHubLocation(LocationChooser.HubPositions position) {
         switch (position) {
             case B:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case A:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             case D:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case C:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             case F:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case E:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             case H:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case G:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             case J:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case I:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             case L:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotFuelRight));
                 } else {
-                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotCoralRight));
+                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotFuelRight));
                 }
             case K:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotFuelLeft));
                 } else {
-                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotCoralLeft));
+                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotFuelLeft));
                 }
             default:
                 return null;
         }
     }
 
-    public static Pose2d getAlgaeReefLocation(LocationChooser.ReefSticks position) {
+    public static Pose2d getFuelLocation(LocationChooser.HubPositions position) {
         switch (position) {
             case AB:
             default:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(18).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(7).get().toPose2d().plus(halfRobotFuel));
                 }
             case CD:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(17).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(8).get().toPose2d().plus(halfRobotFuel));
                 }
             case EF:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(22).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(9).get().toPose2d().plus(halfRobotFuel));
                 }
             case GH:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(21).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(10).get().toPose2d().plus(halfRobotFuel));
                 }
             case IJ:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(20).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(11).get().toPose2d().plus(halfRobotFuel));
                 }
             case KL:
                 if (isBlue()) {
-                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(19).get().toPose2d().plus(halfRobotFuel));
                 } else {
-                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotAlgae));
+                    return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotFuel));
                 }
         }
     }
@@ -251,7 +251,7 @@ public class Locations {
     }
 
     public static Pose2d getTag7() {
-        Pose2d tag = tags.getTagPose(7).get().toPose2d().plus(halfRobotCoralLeft);
+        Pose2d tag = tags.getTagPose(7).get().toPose2d().plus(halfRobotFuelLeft);
         return invert(tag);
     }
 

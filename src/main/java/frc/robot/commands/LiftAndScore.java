@@ -52,25 +52,25 @@ public class LiftAndScore extends SequentialCommandGroup {
     private Command createLiftRotationCommand(int level) {
         switch (level) {
             case 1:
-                return new CoralAutoPosition(liftRotationSubsystem, 0); //stow
+                return new FuelAutoPosition(liftRotationSubsystem, 0); //stow
             case 2:
-                return new CoralAutoPosition(liftRotationSubsystem, 22); //L1
+                return new FuelAutoPosition(liftRotationSubsystem, 22); //L1
             case 3:
-                return new CoralAutoPosition(liftRotationSubsystem, 21); //L2
+                return new FuelAutoPosition(liftRotationSubsystem, 21); //L2
             case 4:
-                return new CoralAutoPosition(liftRotationSubsystem, 26); //L3
+                return new FuelAutoPosition(liftRotationSubsystem, 26); //L3
             case 5:
-                return new CoralAutoPosition(liftRotationSubsystem, 50); //L4
+                return new FuelAutoPosition(liftRotationSubsystem, 50); //L4
             case 6:
-                return new CoralAutoPosition(liftRotationSubsystem, 37.5); //human player
+                return new FuelAutoPosition(liftRotationSubsystem, 37.5); //human player
             case 7:
-                return new CoralAutoPosition(liftRotationSubsystem, 26); //Algae L2
+                return new FuelAutoPosition(liftRotationSubsystem, 26); //Fuel L2
             case 8:
-                return new CoralAutoPosition(liftRotationSubsystem, 26); //Algae L3
+                return new FuelAutoPosition(liftRotationSubsystem, 26); //Fuel L3
             case 9:
-                return new CoralAutoPosition(liftRotationSubsystem, 50); //barge
+                return new FuelAutoPosition(liftRotationSubsystem, 50); //barge
             default:
-                return new CoralAutoPosition(liftRotationSubsystem, 0); //default stow
+                return new FuelAutoPosition(liftRotationSubsystem, 0); //default stow
         } 
     }
 }
