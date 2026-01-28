@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import java.util.List;
 
+/** 2026 REBUILT: HUB positions A–L, fuel stations AB/KL, PROCESSOR=TOWER, BARGE=OUTPOST, LEFT/RIGHT=OUTPOST. */
 public class LocationChooser {
 
     private final SendableChooser<HubPositions> letterChooser = new SendableChooser<>();
@@ -17,7 +18,7 @@ public class LocationChooser {
     public LocationChooser(RobotContainer r) {
         this.r = r;
 
-        // Letter selection
+        // Letter selection (HUB positions A–L and fuel station pairs)
         for (HubPositions hubPos : HubPositions.values()) {
             letterChooser.addOption(hubPos.name(), hubPos);
         }
@@ -38,31 +39,38 @@ public class LocationChooser {
         A, B, C, D, E, F, G, H, I, J, K, L, AB, CD, EF, GH, IJ, KL, PROCESSOR, BARGE, LEFT, RIGHT, CLOSEST, NONE
     }
 
+    /** Returns pose for selected 2026 target: HUB A–L, OUTPOST (LEFT/RIGHT/BARGE), TOWER (PROCESSOR), or fuel pairs. */
     public Pose2d selectFuelLocation() {
-        switch (letterChooser.getSelected()) {
+        HubPositions sel = letterChooser.getSelected();
+        if (sel == null || sel == HubPositions.NONE) {
+            return null;
+        }
+        switch (sel) {
             case LEFT:
                 return Locations.getLeftGatherStationFar();
             case RIGHT:
                 return Locations.getRightGatherStationFar();
             case CLOSEST:
                 return selectClosestFuelLocation();
-
             case PROCESSOR:
-                return Locations.getProcLoc();
-
+                return Locations.getProcLoc();   // 2026: TOWER
             case BARGE:
-                return Locations.getBargeLoc();
-
-            case AB, CD, EF, GH, IJ, KL:
-                return Locations.getFuelLocation(letterChooser.getSelected());
-
+                return Locations.getBargeLoc();  // 2026: OUTPOST
+            case AB:
+            case CD:
+            case EF:
+            case GH:
+            case IJ:
+            case KL:
+                return Locations.getFuelLocation(sel);
             default:
-                return Locations.getHubLocation(letterChooser.getSelected());
+                return Locations.getHubLocation(sel);
         }
     }
 
     public Rotation2d selectGatherAngle() {
-        return selectFuelLocation().getRotation().plus(Rotation2d.fromDegrees(180));
+        Pose2d loc = selectFuelLocation();
+        return (loc != null) ? loc.getRotation().plus(Rotation2d.fromDegrees(180)) : Rotation2d.kZero;
     }
 
     public Rotation2d getAlignAngle() {

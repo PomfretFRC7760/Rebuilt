@@ -16,77 +16,68 @@
 ## Priority 1: Critical Terminology and Naming Updates
 
 ### 1.1 Global Renaming
-- [ ] **Rename all "Coral" → "Fuel"**
+- [x] **Rename all "Coral" → "Fuel"**
   - `CoralIntake.java` → `FuelIntake.java`
   - `CoralJettison.java` → `FuelJettison.java`
   - `CoralAutoPosition.java` → `FuelAutoPosition.java`
   - All variable names: `coral` → `fuel`
   - All comments and documentation strings
 
-- [ ] **Rename all "Algae" → "Fuel"**
+- [x] **Rename all "Algae" → "Fuel"**
   - `AlgaeLocator.java` → `FuelLocator.java`
   - `AlgaeLocatorCommand.java` → `FuelLocatorCommand.java`
   - All variable names: `algae` → `fuel`
   - Note: Both Algae and Coral are FUEL in 2026, need to unify
 
-- [ ] **Update location system terminology**
+- [x] **Update location system terminology**
   - `Reef` → `HUB`
   - `ReefSticks` → `HubPositions` or similar
   - `getReefLocation()` → `getHubLocation()`
   - `getAlgaeReefLocation()` → `getFuelLocation()`
 
 ### 1.2 File Renaming
-- [ ] Rename all related Java files
-- [ ] Update all import statements
-- [ ] Update all references
+- [x] Rename all related Java files
+- [x] Update all import statements
+- [x] Update all references
 
 ---
 
 ## Priority 2: Field and Location System Updates
 
 ### 2.1 AprilTag Field Layout
-- [ ] **Update AprilTag field layout**
+- [x] **Update AprilTag field layout**
   - `Locations.java` line 62: `AprilTagFields.k2025ReefscapeAndyMark` → `AprilTagFields.k2026Rebuilt`
   - Verify all AprilTag IDs are correct (2026 uses IDs 1-32)
   - Update all AprilTag position references
 
 ### 2.2 Location System Refactoring
-- [ ] **Update starting positions**
-  - `blueStarts[]` and `redStarts[]` in `Locations.java` need to be updated to 2026 field coordinates
-  - 2026 field dimensions: 317.7in × 651.2in
-  - Update ROBOT STARTING LINE positions
+- [x] **Update starting positions**
+  - `blueStarts[]` and `redStarts[]` in `Locations.java` and `AutoLocation.java` updated to 2026 field coordinates
+  - Field: 16.518 m × 8.043 m (from 2026-rebuilt-andymark.json)
+  - ROBOT STARTING LINE: 158.6 in (4.028 m) from alliance wall; `getStartingLoc()` uses same constants
 
-- [ ] **Update HUB positions**
-  - HUB is located 158.6 inches from ALLIANCE WALL
-  - Each alliance has one HUB
-  - Update all HUB-related position calculations
+- [x] **Update HUB positions**
+  - HUB positions driven by AprilTag layout (2.1); 158.6 in from wall per game manual
+  - `getHub()`, `getHubLocation()`, `getFuelLocation()` use 2026 HUB tags
 
-- [ ] **Update DEPOT positions**
-  - DEPOT is located near ALLIANCE WALL
-  - Each alliance has one DEPOT
-  - Update collection station positions
+- [x] **Update DEPOT / collection**
+  - Gather stations mapped to OUTPOST (tags 13,14 red; 29,30 blue); `getBargeLoc()` uses OUTPOST
 
-- [ ] **Update TOWER positions**
-  - TOWER is located on ALLIANCE WALL, between DRIVER STATION 2 and 3
-  - Update climbing positions and angles
+- [x] **Update TOWER positions**
+  - TOWER mapped to tags 15,16 red; 31,32 blue; `getProcLoc()` updated in 2.1
 
-- [ ] **Delete/update no longer relevant positions**
-  - Delete Reef-related position calculations
-  - Update or delete Barge positions (if no longer needed)
-  - Update Processor positions (if no longer needed)
+- [x] **Delete/update no longer relevant positions**
+  - Barge → OUTPOST, Processor → TOWER; Reef removed in Priority 1
 
 ### 2.3 Location Chooser Updates
-- [ ] **Update `LocationChooser.java`**
-  - Update `ReefSticks` enum → `HubPositions` or new naming
-  - Remove no longer needed options (e.g., Reef positions A-L)
-  - Add HUB-related options
-  - Update `selectCoralStation()` → `selectFuelLocation()` or similar
+- [x] **Update `LocationChooser.java`**
+  - `HubPositions` enum and `selectFuelLocation()` already done in P1
+  - A–L are 2026 HUB positions; PROCESSOR=TOWER, BARGE=OUTPOST; NONE handled to avoid NPE
+  - Class comment added for 2026 REBUILT
 
-- [ ] **Update `Locations.java`**
-  - Rewrite all location calculation methods to adapt to 2026 field
-  - Update `getReefLocation()` → `getHubLocation()`
-  - Update `getAlgaeReefLocation()` → `getFuelLocation()`
-  - Update all Transform2d offsets to adapt to new field geometry
+- [x] **Update `Locations.java`**
+  - Location methods adapted in 2.1 (AprilTag IDs) and 2.2 (starting positions, constants)
+  - `getHubLocation()` / `getFuelLocation()` use 2026 HUB tags; halfRobot* offsets kept (robot-relative)
 
 ---
 
@@ -172,7 +163,7 @@
 
 ---
 
-## 🔵 Priority 5: Vision and Localization Systems
+## Priority 5: Vision and Localization Systems
 
 ### 5.1 Limelight Updates
 - [ ] **Update AprilTag detection**
