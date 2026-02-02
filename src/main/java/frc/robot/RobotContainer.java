@@ -39,11 +39,12 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.AutoConfig;
 import frc.robot.util.LocationChooser;
 import frc.robot.commands.LiftAutoPosition;
-import frc.robot.commands.LiftAndScore;
+import frc.robot.util.FuelConstants;
 import frc.robot.util.FuelLocator;
 import frc.robot.commands.FuelLocatorCommand;
 import frc.robot.subsystems.LiftRotationSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.HubStatusSubsystem;
 import frc.robot.commands.ClimbCommand;
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -87,7 +88,7 @@ public class RobotContainer {
   public final AutoConfig autoConfig;
 
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
-  
+  private final HubStatusSubsystem hubStatusSubsystem = new HubStatusSubsystem();
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -104,7 +105,7 @@ public class RobotContainer {
   private Pose2d lastSelectedPose = null;
   
 
-  private final LiftCommand liftCommand = new LiftCommand(() -> driverController.povUp().getAsBoolean(), () -> driverController.povDown().getAsBoolean(), () -> driverController.povLeft().getAsBoolean(), () -> driverController.povRight().getAsBoolean(),() -> driverController.x().getAsBoolean(), () -> driverController.rightBumper().getAsBoolean(), () -> operatorController.getRightY(), liftSubsystem, liftRotationSubsystem);
+  private final LiftCommand liftCommand = new LiftCommand(() -> driverController.povUp().getAsBoolean(), () -> driverController.povDown().getAsBoolean(), () -> driverController.povLeft().getAsBoolean(), () -> driverController.povRight().getAsBoolean(), () -> driverController.x().getAsBoolean(), () -> driverController.rightBumper().getAsBoolean(), () -> operatorController.getRightY(), liftSubsystem, liftRotationSubsystem);
 
   private final FloorRotationCommand floorRotationCommand = new FloorRotationCommand(() -> operatorController.povUp().getAsBoolean(), () -> operatorController.povDown().getAsBoolean(), () -> operatorController.povLeft().getAsBoolean(), () -> operatorController.povRight().getAsBoolean(), () -> operatorController.getLeftY(), floorIntakeRotationSubsystem, this);
 
@@ -118,14 +119,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("L1", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 2));
     NamedCommands.registerCommand("L2", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 3));
     NamedCommands.registerCommand("L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 4));
-    NamedCommands.registerCommand("L4", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 5));
     NamedCommands.registerCommand("Human Player", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 6));
-    NamedCommands.registerCommand("Fuel L2", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7));
-    NamedCommands.registerCommand("Fuel L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8));
+    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_FUEL_L2, new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7));
+    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_FUEL_L3, new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8));
     NamedCommands.registerCommand("Barge", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 9));
     autoConfig = new AutoConfig(this);
 
-    NamedCommands.registerCommand("Jettison Fuel", new FuelJettison(liftIntakeRollerSubsystem));
+    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_JETTISON, new FuelJettison(liftIntakeRollerSubsystem, hubStatusSubsystem));
     configureBindings();
 
     driveCommand = new DriveCommand(
@@ -133,7 +133,7 @@ public class RobotContainer {
         () -> -driverController.getRightX(),
         () -> driverController.y().getAsBoolean(), () -> driverController.x().getAsBoolean(),
         driveSubsystem,
-        locationChooser, autoConfig, liftSubsystem, liftIntakeRollerSubsystem, fuelLocatorCommand, liftRotationSubsystem
+        locationChooser, autoConfig, liftSubsystem, liftIntakeRollerSubsystem, fuelLocatorCommand, liftRotationSubsystem, hubStatusSubsystem
     );
     driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -188,7 +188,7 @@ public class RobotContainer {
     SmartDashboard.putData("Reset lift encoders", new InstantCommand(() -> liftCommand.resetLiftPosition()).ignoringDisable(true));
     rollerSubsystem.setDefaultCommand(new FloorRollerCommand(rollerSubsystem, () -> operatorController.a().getAsBoolean(), () -> operatorController.b().getAsBoolean()));
     floorIntakeRotationSubsystem.setDefaultCommand(floorRotationCommand);
-    liftIntakeRollerSubsystem.setDefaultCommand(new LiftRollerCommand(liftIntakeRollerSubsystem, liftRotationSubsystem, () -> driverController.a().getAsBoolean(), () -> driverController.b().getAsBoolean()));
+    liftIntakeRollerSubsystem.setDefaultCommand(new LiftRollerCommand(liftIntakeRollerSubsystem, liftRotationSubsystem, () -> driverController.a().getAsBoolean(), () -> driverController.b().getAsBoolean(), hubStatusSubsystem));
     cameraSubsystem.setDefaultCommand(new CameraCommand(cameraSubsystem));
     climbSubsystem.setDefaultCommand(climbCommand);
     SmartDashboard.putData("Reset pose with Limelight", new InstantCommand(() -> limelightPoseReset.resetPose()).ignoringDisable(true));
@@ -211,8 +211,7 @@ public class RobotContainer {
         lastSelectedPose = currentPose; // Update last pose
         driveCommand.driveToSelectedPose(); // Trigger drive function
     }
-}
-
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.util.FuelCollectionLocations;
 import frc.robot.util.LocationChooser;
 
 public class Locations {
@@ -304,5 +305,19 @@ public class Locations {
         } else {
             return invertAndOffset(tags.getTagPose(13).get().toPose2d().plus(halfRobot));
         }
+    }
+
+    /** 2026 REBUILT: DEPOT (24 FUEL). Enclosed area by alliance wall. Blue tag 29, Red tag 6. */
+    public static Pose2d getDepotLoc() {
+        if (isBlue()) {
+            return invert(tags.getTagPose(29).get().toPose2d().plus(halfRobotFuel));
+        } else {
+            return invert(tags.getTagPose(6).get().toPose2d().plus(halfRobotFuel));
+        }
+    }
+
+    /** 2026 REBUILT: NEUTRAL ZONE center (360–408 FUEL). For path reference. */
+    public static Pose2d getNeutralZoneCenter() {
+        return FuelCollectionLocations.getNeutralZoneCenterPose();
     }
 }

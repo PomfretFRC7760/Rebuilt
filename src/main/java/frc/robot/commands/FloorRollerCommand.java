@@ -1,13 +1,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntakeRollerSubsystem;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
+import java.util.function.BooleanSupplier;
+
+/**
+ * Floor intake roller: intake (A) and jettison (B). Floor jettison ejects FUEL—does not
+ * score into HUB—so no HUB status gate. Intake allowed anytime per 2026 Game Manual.
+ */
 public class FloorRollerCommand extends Command {
   private final FloorIntakeRollerSubsystem rollerSubsystem;
   private final BooleanSupplier shouldIntake;
@@ -24,8 +26,7 @@ public class FloorRollerCommand extends Command {
   public void execute() {
     if (shouldIntake.getAsBoolean()) {
       rollerSubsystem.runRollerIntake();
-    }
-    else if (shouldJettison.getAsBoolean()) {
+    } else if (shouldJettison.getAsBoolean()) {
       rollerSubsystem.runRollerJettison();
     } else {
       if (DriverStation.isTeleop()) {

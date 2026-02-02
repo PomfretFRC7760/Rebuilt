@@ -16,7 +16,10 @@ import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 
-/** Class to run the rollers over CAN */
+/**
+ * Floor roller for FUEL intake and eject. Per 2026 rules, robot may control any number of
+ * FUEL—no maximum. Rollers run continuously (no count cap).
+ */
 public class FloorIntakeRollerSubsystem extends SubsystemBase {
   private final SparkMax motor;
 

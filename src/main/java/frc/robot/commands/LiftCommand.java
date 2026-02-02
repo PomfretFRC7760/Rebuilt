@@ -66,40 +66,23 @@ public class LiftCommand extends Command {
             if (fuelMode.getSelected()) {
                 if (dPadUp.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7).schedule();
-                }
-
-                else if (dPadLeft.getAsBoolean()) {
+                } else if (dPadLeft.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8).schedule();
-
-                }
-
-                else if (dPadRight.getAsBoolean()) {
+                } else if (dPadRight.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 9).schedule();
                 }
-            }
-            else {
+            } else {
                 if (dPadUp.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 2).schedule();
-                }
-
-                else if (dPadDown.getAsBoolean()) {
+                } else if (dPadDown.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 5).schedule();
-                }
-
-                else if (dPadLeft.getAsBoolean()) {
+                } else if (dPadLeft.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 3).schedule();
-
-                }
-
-                else if (dPadRight.getAsBoolean()) {
+                } else if (dPadRight.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 4).schedule();
-                }
-
-                else if (xButton.getAsBoolean()) {
+                } else if (xButton.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1).schedule();
-                }
-
-                else if (leftShoulder.getAsBoolean()) {
+                } else if (leftShoulder.getAsBoolean()) {
                     new LiftAndScore(liftSubsystem, liftRotationSubsystem, 6).schedule();
                 }
             }

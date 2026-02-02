@@ -1,11 +1,14 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FuelLocatorCommand extends Command{
+/**
+ * Locates FUEL in the field via vision for pathfinding. Used with drive-to-fuel and auto sequences.
+ * Per 2026 Game Manual, FUEL can be collected from DEPOT, OUTPOST, or NEUTRAL ZONE.
+ */
+public class FuelLocatorCommand extends Command {
     private final VisionSubsystem visionSubsystem;
     private Pose2d fuelPose;
     public FuelLocatorCommand(VisionSubsystem visionSubsystem) {

@@ -61,15 +61,14 @@ public class AutoConfig {
 
         stationChooser.setDefaultOption("CLOSEST", Station.CLOSEST);
 
-        liftChooser.setDefaultOption("FUEL L1", 2);
-        liftChooser.addOption("FUEL L2", 3);
-        liftChooser.addOption("FUEL L3", 4);
-        liftChooser.addOption("FUEL L4", 5);
-        liftChooser.addOption("BARGE", 9);
+        liftChooser.setDefaultOption(FuelConstants.LABEL_FUEL_L1, 2);
+        liftChooser.addOption(FuelConstants.LABEL_FUEL_L2, 3);
+        liftChooser.addOption(FuelConstants.LABEL_FUEL_L3, 4);
+        liftChooser.addOption("OUTPOST", 9);
 
-        pickupChooser.setDefaultOption("FUEL", 6);
-        pickupChooser.addOption("FUEL L2", 7);
-        pickupChooser.addOption("FUEL L3", 8);
+        pickupChooser.setDefaultOption(FuelConstants.LABEL_FUEL, 6);
+        pickupChooser.addOption(FuelConstants.LABEL_FUEL_L2, 7);
+        pickupChooser.addOption(FuelConstants.LABEL_FUEL_L3, 8);
 
         useCommand.setDefaultOption("YES", true);
         useCommand.addOption("NO", false);
@@ -101,8 +100,9 @@ public class AutoConfig {
         A, B, C, D, E, F, G, H, I, J, K, L, BARGE
     }
 
+    /** 2026 REBUILT: LEFT/RIGHT=OUTPOST (24), DEPOT (24), NEUTRAL_ZONE (360–408), AB–KL=HUB. */
     public static enum Station {
-        LEFT, RIGHT, CLOSEST, AB, CD, EF, GH, IJ, KL
+        LEFT, RIGHT, CLOSEST, DEPOT, NEUTRAL_ZONE, AB, CD, EF, GH, IJ, KL
     }
 
     public static enum Start {
@@ -117,6 +117,10 @@ public class AutoConfig {
                 return AutoLocation.getRightGatherStationFar();
             case CLOSEST:
                 return selectClosestFuelLocation();
+            case DEPOT:
+                return AutoLocation.getDepotLoc();
+            case NEUTRAL_ZONE:
+                return AutoLocation.getNeutralZoneCenter();
             case AB, CD, EF, GH, IJ, KL:
                 return AutoLocation.getFuelLocation(stationChooser.getSelected());
             default:
@@ -133,9 +137,15 @@ public class AutoConfig {
         }
     }
 
+    /** Optimal order by capacity: NEUTRAL_ZONE (360–408) > DEPOT (24) = OUTPOST (24). */
     public Pose2d selectClosestFuelLocation() {
         return r.driveSubsystem.getPose().nearest(
-            List.of(AutoLocation.getLeftGatherStationFar(), AutoLocation.getRightGatherStationFar())
+            List.of(
+                AutoLocation.getNeutralZoneCenter(),
+                AutoLocation.getDepotLoc(),
+                AutoLocation.getLeftGatherStationFar(),
+                AutoLocation.getRightGatherStationFar()
+            )
         );
     }
 

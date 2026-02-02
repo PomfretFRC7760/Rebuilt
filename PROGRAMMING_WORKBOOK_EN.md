@@ -84,7 +84,7 @@
 ## Priority 3: Game Mechanism Implementation
 
 ### 3.1 HUB Activation Logic
-- [ ] **Implement HUB status tracking**
+- [x] **Implement HUB status tracking**
   - Create `HubStatusSubsystem` or similar subsystem
   - Read AUTO scoring results from FMS
   - Track current HUB activation status (Active/Inactive)
@@ -94,33 +94,33 @@
     - SHIFT 1-4: Alternate activation based on AUTO results
     - END GAME: Both HUBS active
 
-- [ ] **Update scoring logic**
+- [x] **Update scoring logic**
   - Only score when HUB is active
   - Show warning or disable scoring commands when HUB is inactive
 
 ### 3.2 TOWER Climbing System
-- [ ] **Update climbing positions**
+- [x] **Update climbing positions**
   - LEVEL 1: 27.0 inches (68.58cm) - AUTO only
   - LEVEL 2: 45.0 inches (114.3cm)
   - LEVEL 3: 63.0 inches (1.6m)
   - Update position values in `LiftAndScore.java`
 
-- [ ] **Update climbing commands**
+- [x] **Update climbing commands**
   - Ensure LEVEL 1 is only available during AUTO
   - Ensure only one LEVEL score can be earned during TELEOP
   - Update `ClimbCommand.java` to adapt to new requirements
 
-- [ ] **Update TOWER contact rules**
+- [x] **Update TOWER contact rules**
   - Robot can only contact RUNGS, UPRIGHTS, TOWER WALL, support structures, FUEL, or other robots
   - Ensure code logic complies with rules
 
 ### 3.3 FUEL Handling System
-- [ ] **Unify FUEL handling**
+- [x] **Unify FUEL handling**
   - Merge Coral and Algae handling logic (both are FUEL)
   - Update all intake/jettison commands
   - Ensure any number of FUEL can be controlled
 
-- [ ] **Update FUEL collection locations**
+- [x] **Update FUEL collection locations**
   - DEPOT: 24 FUEL
   - OUTPOST CHUTE: 24 FUEL
   - NEUTRAL ZONE: 360-408 FUEL (depending on preload)

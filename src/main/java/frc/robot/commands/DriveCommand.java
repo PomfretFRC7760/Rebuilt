@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.HubStatusSubsystem;
 import frc.robot.subsystems.LiftIntakeRollerSubsystem;
 import frc.robot.subsystems.LiftRotationSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
@@ -34,6 +35,7 @@ public class DriveCommand extends Command {
   private final LiftSubsystem liftSubsystem;
   private final LiftIntakeRollerSubsystem liftIntakeRollerSubsystem;
   private final LiftRotationSubsystem liftRotationSubsystem;
+  private final HubStatusSubsystem hubStatus;
 
   private final FuelLocatorCommand fuelLocatorCommand;
   
@@ -47,11 +49,11 @@ public class DriveCommand extends Command {
       Units.degreesToRadians(540), Units.degreesToRadians(720)
   );
 
-  public DriveCommand(DoubleSupplier speed, DoubleSupplier rotation, 
-                      BooleanSupplier robotCentric, BooleanSupplier abortAuto, 
-                      CANDriveSubsystem driveSubsystem, LocationChooser locationChooser, 
-                      AutoConfig autoConfig, LiftSubsystem liftSubsystem, 
-                      LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, FuelLocatorCommand fuelLocatorCommand, LiftRotationSubsystem liftRotationSubsystem) {
+  public DriveCommand(DoubleSupplier speed, DoubleSupplier rotation,
+                      BooleanSupplier robotCentric, BooleanSupplier abortAuto,
+                      CANDriveSubsystem driveSubsystem, LocationChooser locationChooser,
+                      AutoConfig autoConfig, LiftSubsystem liftSubsystem,
+                      LiftIntakeRollerSubsystem liftIntakeRollerSubsystem, FuelLocatorCommand fuelLocatorCommand, LiftRotationSubsystem liftRotationSubsystem, HubStatusSubsystem hubStatus) {
     this.speed = speed;
     this.rotation = rotation;
     this.robotCentric = robotCentric;
@@ -63,6 +65,7 @@ public class DriveCommand extends Command {
     this.liftIntakeRollerSubsystem = liftIntakeRollerSubsystem;
     this.fuelLocatorCommand = fuelLocatorCommand;
     this.liftRotationSubsystem = liftRotationSubsystem;
+    this.hubStatus = hubStatus;
 
     addRequirements(this.driveSubsystem, this.liftSubsystem, this.liftIntakeRollerSubsystem, this.liftRotationSubsystem);
   }
@@ -131,37 +134,28 @@ public class DriveCommand extends Command {
   // Generic auto fuel method
   private Command autoFuel(Pose2d fuelPose, Pose2d stationPose, int liftLevel, boolean enabled, int pickup) {
     if (!enabled) return Commands.none();
-      if (stationPose == null) {
-        Command pathToFuel = createPathfindingCommand(fuelPose);
-        Command liftCommand =  new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
-        Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem);
-        Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
+    if (stationPose == null) {
+      Command pathToFuel = createPathfindingCommand(fuelPose);
+      Command liftCommand = new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
+      Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem, hubStatus);
+      Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
-        Command fuelSequence = pathToFuel
-                                  .andThen(liftCommand)
-                                  .andThen(jettisonCommand)
-                                  .andThen(resetLift);
+      return pathToFuel.andThen(liftCommand).andThen(jettisonCommand).andThen(resetLift);
+    } else {
+      Command pathToFuel = createPathfindingCommand(fuelPose);
+      Command pathToStation = createPathfindingCommand(stationPose);
+      Command liftCommand = new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
+      Command intakeCommand = new FuelIntake(liftIntakeRollerSubsystem);
+      Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem, hubStatus);
+      Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
-        return fuelSequence;
-      }
-      else {
-        Command pathToFuel = createPathfindingCommand(fuelPose);
-        Command pathToStation = createPathfindingCommand(stationPose);
-        Command liftCommand =  new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
-        Command intakeCommand = new  FuelIntake(liftIntakeRollerSubsystem);
-        Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem);
-        Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
-
-        Command fuelSequence = pathToStation
-                                  .andThen(intakeCommand)
-                                  .andThen(pathToFuel)
-                                  .andThen(liftCommand)
-                                  .andThen(jettisonCommand)
-                                  .andThen(resetLift);
-
-        return fuelSequence;
-      }
-      
+      return pathToStation
+          .andThen(intakeCommand)
+          .andThen(pathToFuel)
+          .andThen(liftCommand)
+          .andThen(jettisonCommand)
+          .andThen(resetLift);
+    }
   }
 
 

@@ -35,8 +35,10 @@ public class LocationChooser {
         //SmartDashboard.putData("Climb Mode", climbModeChooser);
     }
 
+    /** 2026 REBUILT: DEPOT (24), OUTPOST=LEFT/RIGHT/BARGE (24), NEUTRAL_ZONE (360–408). */
     public static enum HubPositions {
-        A, B, C, D, E, F, G, H, I, J, K, L, AB, CD, EF, GH, IJ, KL, PROCESSOR, BARGE, LEFT, RIGHT, CLOSEST, NONE
+        A, B, C, D, E, F, G, H, I, J, K, L, AB, CD, EF, GH, IJ, KL,
+        PROCESSOR, BARGE, LEFT, RIGHT, DEPOT, NEUTRAL_ZONE, CLOSEST, NONE
     }
 
     /** Returns pose for selected 2026 target: HUB A–L, OUTPOST (LEFT/RIGHT/BARGE), TOWER (PROCESSOR), or fuel pairs. */
@@ -50,6 +52,10 @@ public class LocationChooser {
                 return Locations.getLeftGatherStationFar();
             case RIGHT:
                 return Locations.getRightGatherStationFar();
+            case DEPOT:
+                return Locations.getDepotLoc();
+            case NEUTRAL_ZONE:
+                return Locations.getNeutralZoneCenter();
             case CLOSEST:
                 return selectClosestFuelLocation();
             case PROCESSOR:
@@ -113,6 +119,12 @@ public class LocationChooser {
             case BARGE:
                 scoringPosition = Rotation2d.fromDegrees(0);
                 break;
+            case DEPOT:
+                scoringPosition = Rotation2d.fromDegrees(0);
+                break;
+            case NEUTRAL_ZONE:
+                scoringPosition = Rotation2d.fromDegrees(0);
+                break;
 
             case AB:
                 scoringPosition = Rotation2d.fromDegrees(180);
@@ -138,9 +150,15 @@ public class LocationChooser {
         return Locations.isBlue() ? scoringPosition : scoringPosition.plus(Rotation2d.fromDegrees(180));
     }
 
+    /** Optimal by capacity: NEUTRAL_ZONE (360–408) > DEPOT (24) = OUTPOST (24). */
     public Pose2d selectClosestFuelLocation() {
         return r.driveSubsystem.getPose().nearest(
-            List.of(Locations.getLeftGatherStationFar(), Locations.getRightGatherStationFar())
+            List.of(
+                Locations.getNeutralZoneCenter(),
+                Locations.getDepotLoc(),
+                Locations.getLeftGatherStationFar(),
+                Locations.getRightGatherStationFar()
+            )
         );
     }
 }
