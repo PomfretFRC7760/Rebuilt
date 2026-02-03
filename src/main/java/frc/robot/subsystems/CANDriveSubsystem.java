@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,7 +20,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     private final SparkFlex leftLeader  = new SparkFlex(1, MotorType.kBrushless);
     private final SparkFlex leftFollower = new SparkFlex(2, MotorType.kBrushless);
     private final SparkFlex rightLeader = new SparkFlex(3, MotorType.kBrushless);
-    private final SparkMax rightFollower = new SparkMax(4, MotorType.kBrushless); //temporary fix because our spark flexes keep shitting themselves
+    private final SparkFlex rightFollower = new SparkFlex(4, MotorType.kBrushless); 
 
     
 
@@ -72,7 +71,7 @@ public class CANDriveSubsystem extends SubsystemBase {
                 .velocityFF(1.0 / 6784)
                 .outputRange(-1, 1);
         SparkFlexConfig leftFollowerConfig = new SparkFlexConfig();
-        SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+        SparkFlexConfig rightFollowerConfig = new SparkFlexConfig();
         // Apply the global config and set the leader SPARK for follower mode
         leftFollowerConfig
             .apply(configMotor)
