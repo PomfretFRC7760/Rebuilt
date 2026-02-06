@@ -61,14 +61,12 @@ public class CANDriveSubsystem extends SubsystemBase {
         rightController = rightLeader.getClosedLoopController();
 
         SparkFlexConfig configMotor = new SparkFlexConfig();
-        configMotor.encoder
-                .positionConversionFactor(1)
-                .velocityConversionFactor(1);
 
         configMotor.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(6e-5)
-                .velocityFF(0.0018)
+                .d(0.00225)
+                .velocityFF(0.00179)
                 .outputRange(-1, 1);
         SparkFlexConfig leftFollowerConfig = new SparkFlexConfig();
         SparkFlexConfig rightFollowerConfig = new SparkFlexConfig();

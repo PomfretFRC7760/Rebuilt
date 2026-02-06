@@ -23,13 +23,11 @@ public class IntakeAndShooterSubsystem extends SubsystemBase {
         rightShooter.getEncoder().setPosition(0);
 
         SparkFlexConfig configMotor = new SparkFlexConfig();
-        configMotor.encoder
-                .positionConversionFactor(1)
-                .velocityConversionFactor(1);
 
         configMotor.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(6e-5)
+                .d(1e-6)
                 .velocityFF(0.0018)
                 .outputRange(-1, 1);
         // Apply the global config and set the Shooter SPARK for follower mode
