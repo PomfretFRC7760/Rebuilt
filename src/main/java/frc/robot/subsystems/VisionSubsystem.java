@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
+import frc.robot.util.LimelightHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
 

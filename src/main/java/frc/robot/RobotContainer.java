@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,6 +7,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,6 +24,7 @@ import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LiftIntakeRollerSubsystem;
 import frc.robot.subsystems.FloorIntakeRollerSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.commands.LiftCommand;
 import frc.robot.subsystems.FloorIntakeRotationSubsystem;
 import frc.robot.commands.FloorRotationCommand;
@@ -46,15 +44,6 @@ import frc.robot.subsystems.LiftRotationSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.HubStatusSubsystem;
 import frc.robot.commands.ClimbCommand;
-/**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
   // The robot's subsystems
   private final FuelLocator fuelLocator = new FuelLocator(this);
@@ -90,6 +79,8 @@ public class RobotContainer {
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final HubStatusSubsystem hubStatusSubsystem = new HubStatusSubsystem();
 
+  private final PDPSubsystem PDPSubsystem = new PDPSubsystem();
+
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       0);
@@ -111,9 +102,6 @@ public class RobotContainer {
 
   public final ClimbCommand climbCommand = new ClimbCommand(climbSubsystem, floorIntakeRotationSubsystem, () -> operatorController.leftBumper().getAsBoolean(), () -> operatorController.rightBumper().getAsBoolean());
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
     NamedCommands.registerCommand("Stow", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1));
     autoConfig = new AutoConfig(this);
@@ -129,46 +117,9 @@ public class RobotContainer {
     );
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    // Set the options to show up in the Dashboard for selecting auto modes. If you
-    // add additional auto modes you can add additional lines here with
-    // autoChooser.addOption
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
-    // Set the A button to run the "RollerCommand" command with a fixed
-    // value ejecting the gamepiece while the button is held
-
-    // before
-
-    
-      
-    
-  
-
-    // Set the default command for the drive subsystem to an instance of the
-    // DriveCommand with the values provided by the joystick axes on the driver
-    // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value). Similarly for the X axis where we need to flip the value so the
-    // joystick matches the WPILib convention of counter-clockwise positive
-
-    // Set the default command for the roller subsystem to an instance of
-    // RollerCommand with the values provided by the triggers on the operator
-    // controller
     SmartDashboard.putData("Reset gyro", new InstantCommand(() -> driveSubsystem.resetGyro()).ignoringDisable(true));
     liftSubsystem.setDefaultCommand(liftCommand);
     SmartDashboard.putData("Reset lift encoders", new InstantCommand(() -> liftCommand.resetLiftPosition()).ignoringDisable(true));
@@ -199,11 +150,6 @@ public class RobotContainer {
     }
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
