@@ -152,12 +152,12 @@ public class CANDriveSubsystem extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds speeds) {
         DifferentialDriveWheelSpeeds ws = kinematics.toWheelSpeeds(speeds);
 
-        leftController.setReference(
+        leftController.setSetpoint(
                 ws.leftMetersPerSecond / WHEEL_CIRCUMFERENCE * 60 * GEAR_RATIO,
                 SparkFlex.ControlType.kVelocity
         );
 
-        rightController.setReference(
+        rightController.setSetpoint(
                 ws.rightMetersPerSecond / WHEEL_CIRCUMFERENCE * 60 * GEAR_RATIO,
                 SparkFlex.ControlType.kVelocity
         );
