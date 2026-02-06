@@ -27,8 +27,8 @@ public class IntakeAndShooterSubsystem extends SubsystemBase {
         configMotor.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(6e-5)
-                .d(1e-6)
-                .velocityFF(0.0018)
+                .d(0.00225)
+                .velocityFF(0.00179)
                 .outputRange(-1, 1);
         // Apply the global config and set the Shooter SPARK for follower mode
         leftShooter.configure(configMotor, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
