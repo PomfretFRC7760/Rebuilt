@@ -30,7 +30,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     private final DifferentialDrive differentialDrive;
     private final GyroSubsystem gyroSubsystem;
 
-    private static final double TRACK_WIDTH = 0.560705;
+    private static final double TRACK_WIDTH = 0.6;
     private static final double WHEEL_DIAMETER = 0.1524;
     private static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     private static final double GEAR_RATIO = 8.46;
@@ -68,7 +68,7 @@ public class CANDriveSubsystem extends SubsystemBase {
         configMotor.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(6e-5)
-                .velocityFF(1.0 / 6784)
+                .velocityFF(0.0018)
                 .outputRange(-1, 1);
         SparkFlexConfig leftFollowerConfig = new SparkFlexConfig();
         SparkFlexConfig rightFollowerConfig = new SparkFlexConfig();

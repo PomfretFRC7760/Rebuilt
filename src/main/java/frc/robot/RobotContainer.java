@@ -219,12 +219,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    if (autoMode.getSelected()) {
-      Command autoSequence = driveCommand.buildFullAutoSequence();
-      return autoSequence;
-    }
-    else{
-      return autoChooser.getSelected();
-    }
+    return autoChooser.getSelected();
   }
 }
