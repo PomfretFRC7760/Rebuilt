@@ -137,7 +137,7 @@ public class DriveCommand extends Command {
     if (stationPose == null) {
       Command pathToFuel = createPathfindingCommand(fuelPose);
       Command liftCommand = new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
-      Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem, hubStatus);
+      Command jettisonCommand = new FuelShoot(liftIntakeRollerSubsystem, hubStatus);
       Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
       return pathToFuel.andThen(liftCommand).andThen(jettisonCommand).andThen(resetLift);
@@ -146,7 +146,7 @@ public class DriveCommand extends Command {
       Command pathToStation = createPathfindingCommand(stationPose);
       Command liftCommand = new LiftAndScore(liftSubsystem, liftRotationSubsystem, liftLevel);
       Command intakeCommand = new FuelIntake(liftIntakeRollerSubsystem);
-      Command jettisonCommand = new FuelJettison(liftIntakeRollerSubsystem, hubStatus);
+      Command jettisonCommand = new FuelShoot(liftIntakeRollerSubsystem, hubStatus);
       Command resetLift = new LiftAndScore(liftSubsystem, liftRotationSubsystem, pickup);
 
       return pathToStation

@@ -33,7 +33,7 @@ import frc.robot.commands.FloorRotationCommand;
 import frc.robot.commands.LiftRollerCommand;
 import frc.robot.commands.CameraCommand;
 import frc.robot.subsystems.CameraSubsystem;
-import frc.robot.commands.FuelJettison;
+import frc.robot.commands.FuelShoot;
 import frc.robot.commands.LimelightPoseReset; 
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.AutoConfig;
