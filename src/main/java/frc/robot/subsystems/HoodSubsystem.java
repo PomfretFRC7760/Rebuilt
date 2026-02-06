@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-public class ClimbSubsystem extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(8, MotorType.kBrushless);
+public class HoodSubsystem extends SubsystemBase {
+    private final SparkMax motor = new SparkMax(9, MotorType.kBrushless);
     private SparkClosedLoopController controller = motor.getClosedLoopController();
 
     private RelativeEncoder encoder = motor.getEncoder();
     private SparkMaxConfig config = new SparkMaxConfig();
     private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, targetRPM;
 
-    public ClimbSubsystem() {
+    public HoodSubsystem() {
         kP = 0.1; 
         kI = 0;
         kD = 0; 
@@ -24,7 +24,7 @@ public class ClimbSubsystem extends SubsystemBase {
         kFF = 0; 
         kMaxOutput = 1; 
         kMinOutput = -1;
-        maxRPM = 5700;
+        maxRPM = 11000;
         config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .p(kP)

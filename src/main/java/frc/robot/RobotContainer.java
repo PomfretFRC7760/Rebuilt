@@ -116,16 +116,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     NamedCommands.registerCommand("Stow", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1));
-    NamedCommands.registerCommand("L1", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 2));
-    NamedCommands.registerCommand("L2", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 3));
-    NamedCommands.registerCommand("L3", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 4));
-    NamedCommands.registerCommand("Human Player", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 6));
-    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_FUEL_L2, new LiftAndScore(liftSubsystem, liftRotationSubsystem, 7));
-    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_FUEL_L3, new LiftAndScore(liftSubsystem, liftRotationSubsystem, 8));
-    NamedCommands.registerCommand("Barge", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 9));
     autoConfig = new AutoConfig(this);
 
-    NamedCommands.registerCommand(FuelConstants.NAMED_COMMAND_JETTISON, new FuelJettison(liftIntakeRollerSubsystem, hubStatusSubsystem));
     configureBindings();
 
     driveCommand = new DriveCommand(
@@ -140,12 +132,6 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoMode.setDefaultOption("Custom path", true);
-    autoMode.addOption("Preplanned path", false);
-    
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Mode", autoMode);
-    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**

@@ -1,44 +1,33 @@
 package frc.robot.subsystems;
 
-import java.util.Optional;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.util.FuelLocator;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    private final LimeLocalizationSubsystem limeF;
-    private final FuelLocator fuelLocator;
+    // Limelight name — empty string means "default" Limelight
+    private static final String limelight = "";
 
-    // Constructor that takes a CANDriveSubsystem instance
-    public VisionSubsystem(CANDriveSubsystem driveSubsystem, FuelLocator fuelLocator) {
-        this.limeF = new LimeLocalizationSubsystem("", driveSubsystem);
-        this.fuelLocator = fuelLocator;
+    public VisionSubsystem() {
     }
 
-    public Pose2d limeFpose() {
-        Optional<Pose2d> limePose = limeF.getPose();
-        return limePose.orElse(null);
+    /** Horizontal offset from crosshair (degrees) */
+    public double getTx() {
+        return LimelightHelpers.getTX(limelight);
     }
 
-    public void setPipeline0(){
-        LimelightHelpers.setPipelineIndex("",0);
+    /** Vertical offset from crosshair (degrees) */
+    public double getTy() {
+        return LimelightHelpers.getTY(limelight);
     }
 
-    public void setPipeline1(){
-        LimelightHelpers.setPipelineIndex("",1);
+    /** AprilTag ID currently seen (-1 if none) */
+    public int getAprilTagID() {
+        return (int) LimelightHelpers.getFiducialID(limelight);
     }
 
-    public void setPipeline2(){
-        LimelightHelpers.setPipelineIndex("",2);
-    }
-
-    public Pose2d getFuelPose() {
-        return fuelLocator.locateFuel();
-    }
-
-    public boolean validateTarget(){
-        return fuelLocator.validateTarget();
+    /** True if Limelight currently sees a valid target */
+    public boolean hasTarget() {
+        return LimelightHelpers.getTV(limelight);
     }
 }
