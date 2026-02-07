@@ -27,9 +27,16 @@ public class DriveCommand extends Command {
     // State
     private boolean passingMode = false;
 
-    // Vision turn controller (tx -> omega)
-    private final PIDController turnPID =
-            new PIDController(0.13, 0.0, 0.001);
+    // Vision PID (tx -> omega)
+    private final PIDController turnPID = new PIDController(0.13, 0.0, 0.001);
+
+    // Heading lock
+    private Double lockedHeadingDeg = null;
+
+    // Deadband and clamp
+    private static final double TX_DEADBAND = 0.5;
+    private static final double MAX_OMEGA = 2.5; // rad/s
+    private static final double maxSpeed = 6.05;
 
     public DriveCommand(
             DoubleSupplier speed,
@@ -46,9 +53,8 @@ public class DriveCommand extends Command {
         this.aimTrigger = aimTrigger;
         this.passingModeToggle = passingModeToggle;
 
-        // PID config
         turnPID.enableContinuousInput(-180.0, 180.0);
-        turnPID.setTolerance(0.5); // degrees
+        turnPID.setTolerance(TX_DEADBAND);
 
         addRequirements(driveSubsystem);
     }
@@ -57,7 +63,7 @@ public class DriveCommand extends Command {
     public void execute() {
         double triggerValue = aimTrigger.getAsDouble();
 
-        // Toggle passing mode on button press
+        // Toggle passing mode (ideally edge-detect)
         if (passingModeToggle.getAsBoolean()) {
             passingMode = !passingMode;
         }
@@ -66,31 +72,53 @@ public class DriveCommand extends Command {
         SmartDashboard.putNumber("AprilTag ID", visionSubsystem.getAprilTagID());
 
         // =============================
-        // AUTO AIM (TURN IN PLACE)
+        // AUTO AIM + HEADING LOCK
         // =============================
         if (triggerValue > 0.75 && visionSubsystem.hasTarget() && !passingMode) {
-            double tx = visionSubsystem.getTx(); // degrees
 
-            double omega = turnPID.calculate(tx, 0.0);
+            double omega;
 
-            // Deadband to stop jitter
-            if (Math.abs(tx) < 0.5) {
-                omega = 0.0;
+            // Phase 1: Rotate using vision if not aligned
+            if (!turnPID.atSetpoint()) {
+                double tx = visionSubsystem.getTx(); // degrees
+
+                omega = turnPID.calculate(tx, 0.0);
+
+                // Deadband
+                if (Math.abs(tx) < TX_DEADBAND) {
+                    omega = 0.0;
+                }
+
+                // Capture heading once aligned
+                if (turnPID.atSetpoint()) {
+                    lockedHeadingDeg = driveSubsystem.getPose().getRotation().getDegrees();
+                }
+
+            } else {
+                // Phase 2: Heading lock using gyro
+                if (lockedHeadingDeg == null) {
+                    lockedHeadingDeg = driveSubsystem.getPose().getRotation().getDegrees();
+                }
+
+                double headingError = lockedHeadingDeg - driveSubsystem.getPose().getRotation().getDegrees();
+                omega = turnPID.calculate(headingError, 0.0);
             }
 
-            // Clamp angular speed (rad/s)
-            omega = MathUtil.clamp(omega, -2.5, 2.5);
+            // Clamp
+            omega = MathUtil.clamp(omega, -MAX_OMEGA, MAX_OMEGA);
+
+            double forward = speed.getAsDouble() * maxSpeed;
 
             driveSubsystem.driveRobotRelative(
                 new ChassisSpeeds(
-                    0.0,   // no forward/back motion
-                    0.0,   // ignored for diff drive
+                    forward, // forward/back
+                    0.0,                 // strafing ignored for diff drive
                     omega
                 )
             );
 
             SmartDashboard.putBoolean("Auto Aim Active", true);
-            SmartDashboard.putNumber("Auto Aim tx", tx);
+            SmartDashboard.putNumber("Auto Aim Omega", omega);
             SmartDashboard.putBoolean("Auto Aim Aligned", turnPID.atSetpoint());
             return;
         }
@@ -98,6 +126,9 @@ public class DriveCommand extends Command {
         // =============================
         // NORMAL DRIVER CONTROL
         // =============================
+        lockedHeadingDeg = null;
+        turnPID.reset();
+
         SmartDashboard.putBoolean("Auto Aim Active", false);
 
         driveSubsystem.driveRobot(
