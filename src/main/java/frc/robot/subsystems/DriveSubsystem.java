@@ -14,7 +14,7 @@ import com.pathplanner.lib.controllers.PPLTVController;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-public class CANDriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
 
     // Motors
     private final SparkFlex leftLeader  = new SparkFlex(1, MotorType.kBrushless);
@@ -43,7 +43,7 @@ public class CANDriveSubsystem extends SubsystemBase {
 
     private RobotConfig config;
 
-    public CANDriveSubsystem(GyroSubsystem gyroSubsystem) {
+    public DriveSubsystem(GyroSubsystem gyroSubsystem) {
         this.gyroSubsystem = gyroSubsystem;
 
 

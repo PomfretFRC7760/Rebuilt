@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.GyroCommand;
 import frc.robot.commands.HoodPosition;
-import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.IntakeAndShooterSubsystem;
@@ -26,7 +26,7 @@ public class RobotContainer {
   //subsystems
   private final GyroSubsystem gyroSubsystem = new GyroSubsystem();
   
-  public final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem(gyroSubsystem);
+  public final DriveSubsystem driveSubsystem = new DriveSubsystem(gyroSubsystem);
 
   private final CameraSubsystem cameraSubsystem = new CameraSubsystem();
 

@@ -9,7 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class DriveCommand extends Command {
@@ -21,7 +21,7 @@ public class DriveCommand extends Command {
     private final BooleanSupplier passingModeToggle;
 
     // Subsystems
-    private final CANDriveSubsystem driveSubsystem;
+    private final DriveSubsystem driveSubsystem;
     private final VisionSubsystem visionSubsystem;
 
     // State
@@ -41,14 +41,7 @@ public class DriveCommand extends Command {
 
     private double xstick;
 
-    public DriveCommand(
-            DoubleSupplier speed,
-            DoubleSupplier rotation,
-            CANDriveSubsystem driveSubsystem,
-            VisionSubsystem visionSubsystem,
-            DoubleSupplier aimTrigger,
-            BooleanSupplier passingModeToggle
-    ) {
+    public DriveCommand(DoubleSupplier speed, DoubleSupplier rotation, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier aimTrigger, BooleanSupplier passingModeToggle) {
         this.speed = speed;
         this.rotation = rotation;
         this.driveSubsystem = driveSubsystem;
