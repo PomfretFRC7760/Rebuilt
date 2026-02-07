@@ -7,7 +7,8 @@
 - [x] Shooter/Intake
 - [x] Climb
 - [x] Hood
-- [ ] RobotContainer update to reflect subsystems and commands
+- [x] RobotContainer update to reflect subsystems and commands
+- [ ] Wrapper commands for for Pathplanner auto
 ### Features coming soon
 - [x] Automatic aim
     - [x] Robot position from Apriltags

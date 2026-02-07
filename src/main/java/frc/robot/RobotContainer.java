@@ -1,20 +1,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.GyroCommand;
 import frc.robot.commands.HoodPosition;
@@ -74,13 +66,16 @@ public class RobotContainer {
     driveCommand = new DriveCommand(
         () -> -driverController.getLeftY(),
         () -> -driverController.getRightX(),
-        driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(),() -> driverController.getXButton() 
+        driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driverController.getXButton() 
     );
     driveSubsystem.setDefaultCommand(driveCommand);
 
     hoodSubsystem.setDefaultCommand(new HoodPosition(hoodSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driveCommand.isPassingMode()));
 
     gyroSubsystem.setDefaultCommand(new GyroCommand(gyroSubsystem, () -> driverController.getStartButton()));
+
+    intakeAndShooterSubsystem.setDefaultCommand(new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
+    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getBButton() ));
   }
 
   private void createNamedCommands() {

@@ -13,18 +13,25 @@ public class FuelIntakeAndShoot extends Command {
     private final DoubleSupplier aimTrigger;
     private final BooleanSupplier passingModeState;
     private final DoubleSupplier shootTrigger;
+    private final BooleanSupplier intakeButton;
 
     public FuelIntakeAndShoot(IntakeAndShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem,
-                        DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger) {
+                        DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger, BooleanSupplier intakeButton) {
         this.shooterSubsystem = shooterSubsystem;
         this.visionSubsystem = visionSubsystem;
         this.aimTrigger = aimTrigger;
         this.passingModeState = passingModeState;
         this.shootTrigger = shootTrigger;
+        this.intakeButton = intakeButton;
         addRequirements(shooterSubsystem, visionSubsystem);
     }
     @Override
     public void execute() {
+
+        if (intakeButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
+            shooterSubsystem.intake();
+            return;
+        }
         // Passing mode: fixed shoot speed
         if (passingModeState.getAsBoolean()) {
             if (aimTrigger.getAsDouble() > 0.75) {
@@ -42,22 +49,22 @@ public class FuelIntakeAndShoot extends Command {
     }
     
     public void autoSpoolUp() {
-    // 1️⃣ Get optimal shot velocity from vision
+    // 1️ Get optimal shot velocity from vision
     double optimalVelocityMetersPerSec = visionSubsystem.getOptimalShotVelocity();
     if (optimalVelocityMetersPerSec < 0) {
         // Target unreachable
         return;
     }
 
-    // 2️⃣ Convert to wheel rotations per second
+    // 2️ Convert to wheel rotations per second
     double wheelDiameterMeters = 0.1016;
     double wheelCircumferenceMeters = Math.PI * wheelDiameterMeters;
     double wheelRotationsPerSec = optimalVelocityMetersPerSec / wheelCircumferenceMeters;
 
-    // 3️⃣ Motor spins 2x faster than wheel
+    // 3️ Motor spins 2x faster than wheel
     double motorRotationsPerSec = wheelRotationsPerSec * 2.0;
 
-    // 4️⃣ Convert to RPM and send to motor
+    // 4️ Convert to RPM and send to motor
     double motorRPM = motorRotationsPerSec * 60.0;
     shooterSubsystem.spoolUpWheels(motorRPM); // implement this in your shooter subsystem
     }
