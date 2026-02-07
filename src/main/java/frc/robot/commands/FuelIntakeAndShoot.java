@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeAndShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class FuelShoot extends Command {
+public class FuelIntakeAndShoot extends Command {
     private final IntakeAndShooterSubsystem shooterSubsystem;
     private final VisionSubsystem visionSubsystem;
     private final DoubleSupplier aimTrigger;
     private final BooleanSupplier passingModeState;
     private final DoubleSupplier shootTrigger;
 
-    public FuelShoot(IntakeAndShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem,
+    public FuelIntakeAndShoot(IntakeAndShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem,
                         DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger) {
         this.shooterSubsystem = shooterSubsystem;
         this.visionSubsystem = visionSubsystem;

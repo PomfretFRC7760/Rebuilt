@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.GyroCommand;
@@ -25,7 +25,7 @@ import frc.robot.subsystems.IntakeAndShooterSubsystem;
 import frc.robot.subsystems.PDPSubsystem;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.commands.FuelShoot;
+import frc.robot.commands.FuelIntakeAndShoot;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.commands.ClimbCommand;
 public class RobotContainer {
@@ -46,12 +46,15 @@ public class RobotContainer {
 
   private final IntakeAndShooterSubsystem intakeAndShooterSubsystem = new IntakeAndShooterSubsystem();
 
+  //commands
+  private DriveCommand driveCommand;
+
   // The driver's controller
-  private final CommandXboxController driverController = new CommandXboxController(
+  private final XboxController driverController = new XboxController(
       0);
 
   // The operator's controller
-  private final CommandXboxController operatorController = new CommandXboxController(
+  private final XboxController operatorController = new XboxController(
       1);
 
   // The autonomous chooser
@@ -65,33 +68,23 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    climbSubsystem.setDefaultCommand(
+    new ClimbCommand(climbSubsystem, () -> driverController.getPOV() == 180, () -> driverController.getPOV() == 0));
 
-    private final LiftCommand liftCommand = new LiftCommand(() -> driverController.povUp().getAsBoolean(), () -> driverController.povDown().getAsBoolean(), () -> driverController.povLeft().getAsBoolean(), () -> driverController.povRight().getAsBoolean(), () -> driverController.x().getAsBoolean(), () -> driverController.rightBumper().getAsBoolean(), () -> operatorController.getRightY(), liftSubsystem, liftRotationSubsystem);
-
-    private final FloorRotationCommand floorRotationCommand = new FloorRotationCommand(() -> operatorController.povUp().getAsBoolean(), () -> operatorController.povDown().getAsBoolean(), () -> operatorController.povLeft().getAsBoolean(), () -> operatorController.povRight().getAsBoolean(), () -> operatorController.getLeftY(), floorIntakeRotationSubsystem, this);
-
-    climbCommand = new ClimbCommand(climbSubsystem, floorIntakeRotationSubsystem, () -> operatorController.leftBumper().getAsBoolean(), () -> operatorController.rightBumper().getAsBoolean());
-
-    SmartDashboard.putData("Reset gyro", new InstantCommand(() -> driveSubsystem.resetGyro()).ignoringDisable(true));
-    liftSubsystem.setDefaultCommand(liftCommand);
-    SmartDashboard.putData("Reset lift encoders", new InstantCommand(() -> liftCommand.resetLiftPosition()).ignoringDisable(true));
-    rollerSubsystem.setDefaultCommand(new FloorRollerCommand(rollerSubsystem, () -> operatorController.a().getAsBoolean(), () -> operatorController.b().getAsBoolean()));
-    floorIntakeRotationSubsystem.setDefaultCommand(floorRotationCommand);
-    liftIntakeRollerSubsystem.setDefaultCommand(new LiftRollerCommand(liftIntakeRollerSubsystem, liftRotationSubsystem, () -> driverController.a().getAsBoolean(), () -> driverController.b().getAsBoolean(), hubStatusSubsystem));
-    cameraSubsystem.setDefaultCommand(new CameraCommand(cameraSubsystem));
-    climbSubsystem.setDefaultCommand(climbCommand);
-
-    driveSubsystem.setDefaultCommand(new DriveCommand(
+    driveCommand = new DriveCommand(
         () -> -driverController.getLeftY(),
         () -> -driverController.getRightX(),
-        () -> driverController.y().getAsBoolean(), () -> driverController.x().getAsBoolean(),
-        driveSubsystem,
-        locationChooser, autoConfig, liftSubsystem, liftIntakeRollerSubsystem, fuelLocatorCommand, liftRotationSubsystem, hubStatusSubsystem
-    ));
+        driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(),() -> driverController.getXButton() 
+    );
+    driveSubsystem.setDefaultCommand(driveCommand);
+
+    hoodSubsystem.setDefaultCommand(new HoodPosition(hoodSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driveCommand.isPassingMode()));
+
+    gyroSubsystem.setDefaultCommand(new GyroCommand(gyroSubsystem, () -> driverController.getStartButton()));
   }
 
   private void createNamedCommands() {
-    NamedCommands.registerCommand("Stow", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1));
+    //NamedCommands.registerCommand("Stow", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1));
   }
 
   public Command getAutonomousCommand() {
