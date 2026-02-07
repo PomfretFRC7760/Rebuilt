@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -10,10 +11,14 @@ import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.util.Units;
 import java.util.function.DoubleSupplier;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public class DriveCommand extends Command {
@@ -25,6 +30,8 @@ public class DriveCommand extends Command {
   private final BooleanSupplier passingModeToggle;
   private boolean autoAimActive = false;
   private boolean passingMode = false;
+  private List<Waypoint> waypoints;
+  private PathPlannerPath path;
 
   
   private Command activePathfindingCommand = null; // Store the active pathfinding command
@@ -49,16 +56,18 @@ public class DriveCommand extends Command {
   @Override
   public void execute() {
       double triggerValue = aimTrigger.getAsDouble();
-
+      SmartDashboard.putNumber("tag number", visionSubsystem.getAprilTagID());
       // Rising-edge detect on trigger
       if (triggerValue > 0.75 && !autoAimActive && visionSubsystem.getAprilTagID() != -1 && !passingMode) {
           autoAim();
+          SmartDashboard.putString("aim active", "aim active");
           autoAimActive = true;
       }
 
       // Reset latch when trigger released
       if (triggerValue <= 0.75) {
           autoAimActive = false;
+          SmartDashboard.putString("aim active", "aim inactive");
       }
 
       if (passingModeToggle.getAsBoolean()) {
@@ -81,6 +90,7 @@ public class DriveCommand extends Command {
   public void autoAim() {
     // Get vision target offset
     double tx = visionSubsystem.getTx();
+    SmartDashboard.putNumber("tx", tx);
 
     // Get current robot pose
     Pose2d currentPose = driveSubsystem.getPose();
@@ -102,18 +112,24 @@ public class DriveCommand extends Command {
             new edu.wpi.first.math.geometry.Rotation2d(targetHeadingRad)
     );
 
-    // Cancel any existing pathfinding
-    if (activePathfindingCommand != null) {
-        activePathfindingCommand.cancel();
-    }
+    SmartDashboard.putString("Current pose", currentPose.toString());
+    SmartDashboard.putString("Target pose", targetPose.toString());
 
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        currentPose,
+        targetPose
+    );
+    path = new PathPlannerPath(
+        waypoints,
+        constraints,
+        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+        new GoalEndState(0.0, new edu.wpi.first.math.geometry.Rotation2d(targetHeadingRad)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    );  
+
+    path.preventFlipping = true;
     // Create and schedule pathfinding command
     activePathfindingCommand =
-            AutoBuilder.pathfindToPose(
-                    targetPose,
-                    constraints,
-                    0.0
-            );
+            AutoBuilder.followPath(path);
 
     CommandScheduler.getInstance().schedule(activePathfindingCommand);
 

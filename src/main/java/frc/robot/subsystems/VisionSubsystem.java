@@ -12,13 +12,13 @@ import java.util.Optional;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    private static final String LIMELIGHT_NAME = "";
+    private static final String LIMELIGHT = "";
 
     // ================================
     // LIMELIGHT MOUNTING CONSTANTS
     // ================================
     private static final double LIMELIGHT_HEIGHT_METERS = 0.65;
-    private static final double LIMELIGHT_PITCH_DEGREES = 25.0;
+    private static final double LIMELIGHT_PITCH_DEGREES = 0;
 
     // ================================
     // SHOOTER MOUNTING CONSTANTS
@@ -38,15 +38,15 @@ public class VisionSubsystem extends SubsystemBase {
     // ================================
     // LIMELIGHT RAW VALUES
     // ================================
-    public double getTx() { return LimelightHelpers.getTX(LIMELIGHT_NAME); }
-    public double getTy() { return LimelightHelpers.getTY(LIMELIGHT_NAME); }
-    public boolean hasTarget() { return LimelightHelpers.getTV(LIMELIGHT_NAME); }
+    public double getTx() { return LimelightHelpers.getTX(LIMELIGHT); }
+    public double getTy() { return LimelightHelpers.getTY(LIMELIGHT); }
+    public boolean hasTarget() { return LimelightHelpers.getTV(LIMELIGHT); }
 
     // ================================
     // APRILTAG HANDLING
     // ================================
     public int getAprilTagID() {
-        int id = (int) LimelightHelpers.getFiducialID(LIMELIGHT_NAME);
+        int id = (int) LimelightHelpers.getFiducialID(LIMELIGHT);
         switch (id) {
             case 9: case 10: case 8: case 5:
             case 11: case 2: case 18: case 27:

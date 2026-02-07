@@ -49,22 +49,22 @@ public class FuelIntakeAndShoot extends Command {
     }
     
     public void autoSpoolUp() {
-    // 1️ Get optimal shot velocity from vision
+    // 1 Get optimal shot velocity from vision
     double optimalVelocityMetersPerSec = visionSubsystem.getOptimalShotVelocity();
     if (optimalVelocityMetersPerSec < 0) {
         // Target unreachable
         return;
     }
 
-    // 2️ Convert to wheel rotations per second
+    // 2 Convert to wheel rotations per second
     double wheelDiameterMeters = 0.1016;
     double wheelCircumferenceMeters = Math.PI * wheelDiameterMeters;
     double wheelRotationsPerSec = optimalVelocityMetersPerSec / wheelCircumferenceMeters;
 
-    // 3️ Motor spins 2x faster than wheel
+    // 3 Motor spins 2x faster than wheel
     double motorRotationsPerSec = wheelRotationsPerSec * 2.0;
 
-    // 4️ Convert to RPM and send to motor
+    // 4 Convert to RPM and send to motor
     double motorRPM = motorRotationsPerSec * 60.0;
     shooterSubsystem.spoolUpWheels(motorRPM); // implement this in your shooter subsystem
     }
