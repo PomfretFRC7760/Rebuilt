@@ -18,7 +18,7 @@ public class FuelIntake extends Command {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         if (intakeButton.getAsBoolean() && !shootButton.getAsBoolean()) {
             intakeSubsystem.intake();
         }

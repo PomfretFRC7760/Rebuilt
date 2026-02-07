@@ -23,7 +23,7 @@ public class FuelShoot extends Command {
         addRequirements(shooterSubsystem, visionSubsystem);
     }
     @Override
-    public void initialize() {
+    public void execute() {
         // Passing mode: fixed shoot speed
         if (passingModeState.getAsBoolean()) {
             if (aimButton.getAsBoolean()) {

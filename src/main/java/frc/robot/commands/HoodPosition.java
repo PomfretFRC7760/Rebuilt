@@ -26,7 +26,7 @@ public class HoodPosition extends Command {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         // Passing mode: fixed hood angle
         if (passingModeState.getAsBoolean()) {
             hoodSubsystem.setPosition(30); // placeholder hood angle for passing balls
