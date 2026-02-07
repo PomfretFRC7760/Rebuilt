@@ -4,14 +4,14 @@
 ### Bugfixes
 - None for now (hopefully it stays this way)
 ### Commands to add
-- [ ] Shooter/Intake
-- [ ] Climb
-- [ ] Hood
+- [x] Shooter/Intake
+- [x] Climb
+- [x] Hood
 - [ ] RobotContainer update to reflect subsystems and commands
 ### Features coming soon
-- [ ] Automatic aim
+- [x] Automatic aim
     - [x] Robot position from Apriltags
     - [x] Rotate to target
-    - [ ] Calculate shot angle and distance
+    - [x] Calculate shot angle and distance
 - [ ] Elastic dashboard for better telemetry
 - [ ] AdvantageKit logging

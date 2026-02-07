@@ -5,100 +5,60 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.FloorIntakeRotationSubsystem;
 
 import java.util.function.BooleanSupplier;
 
-/**
- * Climb command with 2026 REBUILT rule enforcement:
- * - LEVEL 1: AUTO only (points awarded only during autonomous)
- * - TELEOP: Only one level can be earned per robot
- * - TOWER contact: Robot must contact RUNGS or UPRIGHTS; may only additionally contact
- *   TOWER WALL, support structure, FUEL, or another ROBOT (Game Manual 6.5.2)
- */
 public class ClimbCommand extends Command {
 
-    /** TOWER contact rules per 2026 Game Manual Section 6.5.2. */
-    private static final String TOWER_CONTACT_RULES =
-            "TOWER contact: RUNGS, UPRIGHTS, TOWER WALL, support structure, FUEL, other ROBOT only";
-
     private final ClimbSubsystem climbSubsystem;
-    private final FloorIntakeRotationSubsystem floorIntakeRotationSubsystem;
-    private final BooleanSupplier leftBumper;
-    private final BooleanSupplier rightBumper;
+    private final BooleanSupplier armClimb;
+    private final BooleanSupplier climbButton;
 
-    public boolean armClimb = false;
+    private boolean climbArmedState = true;
+    private boolean autoClimbed = false;
 
-    /** True once climb has been used during this TELEOP; reset when disabled. */
-    private boolean hasClimbedThisTeleop = false;
-
-    public ClimbCommand(ClimbSubsystem climbSubsystem, FloorIntakeRotationSubsystem floorIntakeRotationSubsystem, BooleanSupplier leftBumper, BooleanSupplier rightBumper) {
+    public ClimbCommand(ClimbSubsystem climbSubsystem, BooleanSupplier armClimb, BooleanSupplier climbButton) {
         this.climbSubsystem = climbSubsystem;
-        this.floorIntakeRotationSubsystem = floorIntakeRotationSubsystem;
-        this.leftBumper = leftBumper;
-        this.rightBumper = rightBumper;
-        addRequirements(climbSubsystem, floorIntakeRotationSubsystem);
-    }
-
-    @Override
-    public void initialize() {
-        SmartDashboard.putData("Arm climb (cannot be disarmed after arming!)", new InstantCommand(() -> armClimb()));
+        this.armClimb = armClimb;
+        this.climbButton = climbButton;
+        addRequirements(climbSubsystem);
     }
 
     @Override
     public void execute() {
-        if (DriverStation.isDisabled()) {
-            hasClimbedThisTeleop = false;
-        }
-
-        if (armClimb) {
-            SmartDashboard.putString("TOWER Contact Rules", TOWER_CONTACT_RULES);
-
-            if (floorIntakeRotationSubsystem.getPosition() > -37.5 && floorIntakeRotationSubsystem.getPosition() < -35.5) {
-                floorIntakeRotationSubsystem.autoPosition(-36.5);
-                return;
-            }
-
-            if (DriverStation.isTeleop() && hasClimbedThisTeleop) {
-                climbSubsystem.runMotor(0);
-                floorIntakeRotationSubsystem.stallMotor();
-                SmartDashboard.putString("Climb Status", "One level per TELEOP — climb locked");
-                return;
-            }
-
-            if (leftBumper.getAsBoolean()) {
-                floorIntakeRotationSubsystem.manualControl(0);
-                floorIntakeRotationSubsystem.setCoast();
-                climbSubsystem.runMotor(-0.75);
-                if (DriverStation.isTeleop()) {
-                    hasClimbedThisTeleop = true;
+        if (DriverStation.isTeleop()) {
+            if (!climbArmedState) {
+                if (armClimb.getAsBoolean()) {
+                    climbSubsystem.setPosition(20); //placeholder pre climb position
+                    climbArmedState = true;
+                    return;
                 }
-                return;
-            } else if (rightBumper.getAsBoolean()) {
-                floorIntakeRotationSubsystem.manualControl(0);
-                floorIntakeRotationSubsystem.setCoast();
-                climbSubsystem.runMotor(0.75);
-                if (DriverStation.isTeleop()) {
-                    hasClimbedThisTeleop = true;
+            } else if (climbArmedState && !autoClimbed) {
+                if (armClimb.getAsBoolean()) {
+                    climbSubsystem.setPosition(0); //vertical position
+                    climbArmedState = false;
+                    return;
                 }
-                return;
-            } else {
-                climbSubsystem.runMotor(0);
-                floorIntakeRotationSubsystem.stallMotor();
-                if (DriverStation.isTeleop()) {
-                    SmartDashboard.putString("Climb Status", hasClimbedThisTeleop ? "One level per TELEOP — used" : "Ready");
-                } else if (DriverStation.isAutonomous()) {
-                    SmartDashboard.putString("Climb Status", "AUTO — LEVEL 1 only");
+                else if (climbButton.getAsBoolean()) {
+                    climbSubsystem.setPosition(-20); //placeholder climb position
+                    return;
                 }
-            }
-
-            if (DriverStation.isDisabled()) {
-                floorIntakeRotationSubsystem.setBrake();
+            } else if (climbArmedState && autoClimbed) {
+                if (armClimb.getAsBoolean()) {
+                    climbSubsystem.setPosition(20); //placeholder pre climb position
+                    autoClimbed = false;
+                    return;
+                }
             }
         }
     }
 
-    public void armClimb() {
-        armClimb = true;
+    public void autoPhaseArmClimb() {
+        climbSubsystem.setPosition(20);//placeholder pre climb position
+    }
+
+    public void autoPhaseClimb() {
+        climbSubsystem.setPosition(-10); //placeholder auto climb position
+        autoClimbed = true;
     }
 }

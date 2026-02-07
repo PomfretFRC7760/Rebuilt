@@ -1,27 +1,26 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.LiftIntakeRollerSubsystem;
+import frc.robot.subsystems.IntakeAndShooterSubsystem;
 
-/**
- * Intakes FUEL into the lift mechanism. Per 2026 Game Manual, intake is allowed anytime
- * from DEPOT, OUTPOST, or NEUTRAL ZONE. No HUB status restriction on collection.
- */
 public class FuelIntake extends Command {
-    private final LiftIntakeRollerSubsystem intake;
+    private final IntakeAndShooterSubsystem intakeSubsystem;
+    private final BooleanSupplier intakeButton;
+    private final BooleanSupplier shootButton;
 
-    public FuelIntake(LiftIntakeRollerSubsystem intake) {
-        this.intake = intake;
-        addRequirements(intake);
+    public FuelIntake(IntakeAndShooterSubsystem intakeSubsystem, BooleanSupplier intakeButton, BooleanSupplier shootButton) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.intakeButton = intakeButton;
+        this.shootButton = shootButton;
+        addRequirements(intakeSubsystem);
     }
 
     @Override
     public void initialize() {
-        intake.autoRunRollerIntake();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true;
+        if (intakeButton.getAsBoolean() && !shootButton.getAsBoolean()) {
+            intakeSubsystem.intake();
+        }
     }
 }

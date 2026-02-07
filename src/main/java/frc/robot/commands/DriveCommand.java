@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.util.Units;
 import java.util.function.DoubleSupplier;
+import java.util.function.BooleanSupplier;
 
 public class DriveCommand extends Command {
   private final DoubleSupplier speed;
@@ -21,7 +22,10 @@ public class DriveCommand extends Command {
   private final DoubleSupplier aimTrigger;
   private final CANDriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
+  private final BooleanSupplier passingModeToggle;
   private boolean autoAimActive = false;
+  private boolean passingMode = false;
+
   
   private Command activePathfindingCommand = null; // Store the active pathfinding command
   
@@ -31,12 +35,13 @@ public class DriveCommand extends Command {
   );
 
   public DriveCommand(DoubleSupplier speed, DoubleSupplier rotation,
-                      CANDriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier aimTrigger) {
+                      CANDriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier aimTrigger, BooleanSupplier passingModeToggle) {
     this.speed = speed;
     this.rotation = rotation;
     this.aimTrigger = aimTrigger;
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
+    this.passingModeToggle = passingModeToggle;
 
     addRequirements(this.driveSubsystem);
   }
@@ -46,7 +51,7 @@ public class DriveCommand extends Command {
       double triggerValue = aimTrigger.getAsDouble();
 
       // Rising-edge detect on trigger
-      if (triggerValue > 0.75 && !autoAimActive) {
+      if (triggerValue > 0.75 && !autoAimActive && visionSubsystem.getAprilTagID() != -1 && !passingMode) {
           autoAim();
           autoAimActive = true;
       }
@@ -54,6 +59,15 @@ public class DriveCommand extends Command {
       // Reset latch when trigger released
       if (triggerValue <= 0.75) {
           autoAimActive = false;
+      }
+
+      if (passingModeToggle.getAsBoolean()) {
+        if (passingMode) {
+          passingMode = false;
+        }
+        else if (!passingMode) {
+          passingMode = true;
+        }
       }
 
       // Normal driving always allowed
@@ -111,8 +125,7 @@ public class DriveCommand extends Command {
     );
 }
 
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+public boolean isPassingMode() {
+    return passingMode;
+}
 }

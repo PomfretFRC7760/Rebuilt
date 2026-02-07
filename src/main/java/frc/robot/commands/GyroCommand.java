@@ -15,9 +15,4 @@ public class GyroCommand extends Command {
     public void resetGyro() {
         gyroSubsystem.gyroReset();
     }
-
-    @Override
-    public boolean isFinished() {
-        return true; // Since this command will be used in an InstantCommand, it should finish immediately
-    }
 }
