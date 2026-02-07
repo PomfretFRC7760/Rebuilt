@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeAndShooterSubsystem;
@@ -9,33 +10,33 @@ import frc.robot.subsystems.VisionSubsystem;
 public class FuelShoot extends Command {
     private final IntakeAndShooterSubsystem shooterSubsystem;
     private final VisionSubsystem visionSubsystem;
-    private final BooleanSupplier aimButton;
+    private final DoubleSupplier aimTrigger;
     private final BooleanSupplier passingModeState;
-    private final BooleanSupplier shootButton;
+    private final DoubleSupplier shootTrigger;
 
     public FuelShoot(IntakeAndShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem,
-                        BooleanSupplier aimButton, BooleanSupplier passingModeState, BooleanSupplier shootButton) {
+                        DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger) {
         this.shooterSubsystem = shooterSubsystem;
         this.visionSubsystem = visionSubsystem;
-        this.aimButton = aimButton;
+        this.aimTrigger = aimTrigger;
         this.passingModeState = passingModeState;
-        this.shootButton = shootButton;
+        this.shootTrigger = shootTrigger;
         addRequirements(shooterSubsystem, visionSubsystem);
     }
     @Override
     public void execute() {
         // Passing mode: fixed shoot speed
         if (passingModeState.getAsBoolean()) {
-            if (aimButton.getAsBoolean()) {
+            if (aimTrigger.getAsDouble() > 0.75) {
                 shooterSubsystem.spoolUpWheels(6000);
             }
         } else if (!passingModeState.getAsBoolean()) {
-            if (aimButton.getAsBoolean()) {
+            if (aimTrigger.getAsDouble() > 0.75) {
                 autoSpoolUp();
             }
         }
 
-        if (shootButton.getAsBoolean()) {
+        if (shootTrigger.getAsDouble() > 0.75) {
             shooterSubsystem.shoot();
         }
     }
