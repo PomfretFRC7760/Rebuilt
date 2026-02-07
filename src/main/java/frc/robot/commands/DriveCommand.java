@@ -37,6 +37,9 @@ public class DriveCommand extends Command {
     private static final double TX_DEADBAND = 0.5;
     private static final double MAX_OMEGA = 2.5; // rad/s
     private static final double maxSpeed = 6.05;
+    private static final double deadband = 0.1;
+
+    private double xstick;
 
     public DriveCommand(
             DoubleSupplier speed,
@@ -106,8 +109,19 @@ public class DriveCommand extends Command {
 
             // Clamp
             omega = MathUtil.clamp(omega, -MAX_OMEGA, MAX_OMEGA);
-
-            double forward = speed.getAsDouble() * maxSpeed;
+            double xstickraw = speed.getAsDouble();
+            if (Math.abs(xstickraw) >= deadband) {
+                // Remove the deadband and rescale to full range
+                if (xstickraw > 0) {
+                    xstick = (xstickraw - deadband) / (1.0 - deadband);
+                } else {
+                    xstick = (xstickraw + deadband) / (1.0 - deadband);
+                }
+            }
+            else if (Math.abs(xstickraw) < 0.1) {
+                xstick = 0;
+            }
+            double forward = xstick * maxSpeed;
 
             driveSubsystem.driveRobotRelative(
                 new ChassisSpeeds(
