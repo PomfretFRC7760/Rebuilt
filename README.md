@@ -8,7 +8,7 @@
 - [x] Climb
 - [x] Hood
 - [x] RobotContainer update to reflect subsystems and commands
-- [ ] Wrapper commands for for Pathplanner auto
+- [x] Pathplanner named commands
 ### Features coming soon
 - [x] Automatic aim
     - [x] Robot position from Apriltags

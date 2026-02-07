@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -40,6 +42,14 @@ public class RobotContainer {
 
   //commands
   private DriveCommand driveCommand;
+  
+  private ClimbCommand climbCommand;
+  
+  private FuelIntakeAndShoot fuelIntakeAndShoot;
+
+  private HoodPosition hoodPosition;
+
+  private GyroCommand gyroCommand;
 
   // The driver's controller
   private final XboxController driverController = new XboxController(
@@ -60,27 +70,40 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    climbSubsystem.setDefaultCommand(
-    new ClimbCommand(climbSubsystem, () -> driverController.getPOV() == 180, () -> driverController.getPOV() == 0));
+    climbCommand = new ClimbCommand(climbSubsystem, () -> driverController.getPOV() == 180, () -> driverController.getPOV() == 0);
+
+    climbSubsystem.setDefaultCommand(climbCommand);
 
     driveCommand = new DriveCommand(
         () -> -driverController.getLeftY(),
         () -> -driverController.getRightX(),
         driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driverController.getXButton() 
     );
+
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    hoodSubsystem.setDefaultCommand(new HoodPosition(hoodSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driveCommand.isPassingMode()));
+    hoodPosition = new HoodPosition(hoodSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driveCommand.isPassingMode());
 
-    gyroSubsystem.setDefaultCommand(new GyroCommand(gyroSubsystem, () -> driverController.getStartButton()));
+    hoodSubsystem.setDefaultCommand(hoodPosition);
 
-    intakeAndShooterSubsystem.setDefaultCommand(new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
-    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getRightBumperButton()));
+    gyroCommand = new GyroCommand(gyroSubsystem, () -> driverController.getYButton());
+    
+    gyroSubsystem.setDefaultCommand(gyroCommand);
+
+    fuelIntakeAndShoot = new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
+    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getRightBumperButton());
+
+    intakeAndShooterSubsystem.setDefaultCommand(fuelIntakeAndShoot);
   }
 
   private void createNamedCommands() {
-    //NamedCommands.registerCommand("Stow", new LiftAndScore(liftSubsystem, liftRotationSubsystem, 1));
-  }
+    NamedCommands.registerCommand("Arm Climb", new InstantCommand(() -> climbCommand.autoPhaseArmClimb()));
+    NamedCommands.registerCommand("Climb L1", new InstantCommand(() -> climbCommand.autoPhaseClimb()));
+    NamedCommands.registerCommand("Intake Fuel", new InstantCommand(() -> intakeAndShooterSubsystem.intake()));
+    NamedCommands.registerCommand("Spool up", new InstantCommand(() -> fuelIntakeAndShoot.autoSpoolUp()));
+    NamedCommands.registerCommand("Shoot", new InstantCommand(() -> intakeAndShooterSubsystem.shoot()));
+    NamedCommands.registerCommand("Aim hood", new InstantCommand(() -> hoodPosition.autoPositionHood()));
+  } 
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
