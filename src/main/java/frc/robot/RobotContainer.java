@@ -75,7 +75,7 @@ public class RobotContainer {
     gyroSubsystem.setDefaultCommand(new GyroCommand(gyroSubsystem, () -> driverController.getStartButton()));
 
     intakeAndShooterSubsystem.setDefaultCommand(new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
-    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getBButton() ));
+    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getRightBumperButton()));
   }
 
   private void createNamedCommands() {
