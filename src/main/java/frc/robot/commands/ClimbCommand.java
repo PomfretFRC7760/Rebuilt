@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
 
@@ -24,6 +25,7 @@ public class ClimbCommand extends Command {
 
     @Override
     public void execute() {
+        SmartDashboard.putBoolean("Climb Armed State", climbArmedState);
         if (DriverStation.isTeleop()) {
             if (!climbArmedState) {
                 if (armClimb.getAsBoolean()) {

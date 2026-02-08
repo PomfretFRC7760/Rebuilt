@@ -70,14 +70,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    climbCommand = new ClimbCommand(climbSubsystem, () -> driverController.getPOV() == 180, () -> driverController.getPOV() == 0);
+    climbCommand = new ClimbCommand(climbSubsystem, () -> driverController.getStartButtonPressed(), () -> driverController.getYButtonPressed());
 
     climbSubsystem.setDefaultCommand(climbCommand);
 
     driveCommand = new DriveCommand(
         () -> -driverController.getLeftY(),
         () -> -driverController.getRightX(),
-        driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driverController.getXButton() 
+        driveSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), () -> driverController.getXButtonPressed() 
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
@@ -86,9 +86,9 @@ public class RobotContainer {
 
     hoodSubsystem.setDefaultCommand(hoodPosition);
 
-    gyroCommand = new GyroCommand(gyroSubsystem, () -> driverController.getYButton());
+    gyroCommand = new GyroCommand(gyroSubsystem, () -> driverController.getBackButtonPressed());
     
-    gyroSubsystem.setDefaultCommand(gyroCommand);
+    gyroSubsystem.setDefaultCommand(gyroCommand.ignoringDisable(true));
 
     fuelIntakeAndShoot = new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
     () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getRightBumperButton());

@@ -14,8 +14,8 @@ public class GyroCommand extends Command {
         this.resetButton = resetButton;
         addRequirements(this.gyroSubsystem);
     }
-
-    public void resetGyro() {
+    @Override
+    public void execute() {
         if (resetButton.getAsBoolean()) {
             gyroSubsystem.gyroReset();
         }
