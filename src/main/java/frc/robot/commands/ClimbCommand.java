@@ -13,7 +13,7 @@ public class ClimbCommand extends Command {
     private final BooleanSupplier armClimb;
     private final BooleanSupplier climbButton;
 
-    private boolean climbArmedState = true;
+    private boolean climbArmedState = false;
     private boolean autoClimbed = false;
 
     public ClimbCommand(ClimbSubsystem climbSubsystem, BooleanSupplier armClimb, BooleanSupplier climbButton) {
@@ -27,7 +27,7 @@ public class ClimbCommand extends Command {
     public void execute() {
         SmartDashboard.putBoolean("Climb Armed State", climbArmedState);
         if (DriverStation.isTeleop()) {
-            if (!climbArmedState) {
+            if (!climbArmedState && !autoClimbed) {
                 if (armClimb.getAsBoolean()) {
                     climbSubsystem.setPosition(20); //placeholder pre climb position
                     climbArmedState = true;
@@ -43,10 +43,11 @@ public class ClimbCommand extends Command {
                     climbSubsystem.setPosition(-20); //placeholder climb position
                     return;
                 }
-            } else if (climbArmedState && autoClimbed) {
+            } else if (!climbArmedState && autoClimbed) {
                 if (armClimb.getAsBoolean()) {
                     climbSubsystem.setPosition(20); //placeholder pre climb position
                     autoClimbed = false;
+                    climbArmedState = true;
                     return;
                 }
             }
