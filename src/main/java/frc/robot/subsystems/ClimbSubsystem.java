@@ -34,6 +34,6 @@ public class ClimbSubsystem extends SubsystemBase {
         .outputRange(kMinOutput, kMaxOutput);
     }
     public void setPosition(double position){
-        controller.setSetpoint(position,SparkFlex.ControlType.kPosition);
+        controller.setSetpoint(position,SparkFlex.ControlType.kMAXMotionPositionControl);
     }
 }

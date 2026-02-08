@@ -35,20 +35,20 @@ public class IntakeAndShooterSubsystem extends SubsystemBase {
         rightShooter.configure(configMotor, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
     }
     public void spoolUpWheels(double speed){
-        leftController.setSetpoint(speed,SparkFlex.ControlType.kVelocity);
-        rightController.setSetpoint(speed,SparkFlex.ControlType.kVelocity);
+        leftController.setSetpoint(speed,SparkFlex.ControlType.kMAXMotionVelocityControl);
+        rightController.setSetpoint(speed,SparkFlex.ControlType.kMAXMotionVelocityControl);
     }
     public void shoot() {
         indexer.set(100);
     }
     public void stop(){
         indexer.set(0);
-        leftController.setSetpoint(0,SparkFlex.ControlType.kVelocity);
-        rightController.setSetpoint(0,SparkFlex.ControlType.kVelocity);
+        leftController.setSetpoint(0,SparkFlex.ControlType.kMAXMotionVelocityControl);
+        rightController.setSetpoint(0,SparkFlex.ControlType.kMAXMotionVelocityControl);
     }
     public void intake(){
         indexer.set(-100);
-        leftController.setSetpoint(-6000,SparkFlex.ControlType.kVelocity);
-        rightController.setSetpoint(-6000,SparkFlex.ControlType.kVelocity);
+        leftController.setSetpoint(-6000,SparkFlex.ControlType.kMAXMotionVelocityControl);
+        rightController.setSetpoint(-6000,SparkFlex.ControlType.kMAXMotionVelocityControl);
     }
 }
