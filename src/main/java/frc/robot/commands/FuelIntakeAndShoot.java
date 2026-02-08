@@ -43,7 +43,7 @@ public class FuelIntakeAndShoot extends Command {
             }
         }
 
-        if (shootTrigger.getAsDouble() > 0.75) {
+        if (shootTrigger.getAsDouble() > 0.75 && aimTrigger.getAsDouble() > 0.75) {
             shooterSubsystem.shoot();
         }
     }
