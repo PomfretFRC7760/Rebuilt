@@ -154,12 +154,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftController.setSetpoint(
                 ws.leftMetersPerSecond / WHEEL_CIRCUMFERENCE * 60 * GEAR_RATIO,
-                SparkFlex.ControlType.kMAXMotionVelocityControl
+                SparkFlex.ControlType.kVelocity
         );
 
         rightController.setSetpoint(
                 ws.rightMetersPerSecond / WHEEL_CIRCUMFERENCE * 60 * GEAR_RATIO,
-                SparkFlex.ControlType.kMAXMotionVelocityControl
+                SparkFlex.ControlType.kVelocity
         );
     }
 
