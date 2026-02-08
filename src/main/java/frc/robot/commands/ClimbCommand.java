@@ -13,7 +13,7 @@ public class ClimbCommand extends Command {
     private final BooleanSupplier armClimb;
     private final BooleanSupplier climbButton;
 
-    private boolean climbArmedState = true;
+    private boolean climbArmedState = false;
     private boolean autoClimbed = false;
 
     public ClimbCommand(ClimbSubsystem climbSubsystem, BooleanSupplier armClimb, BooleanSupplier climbButton) {
@@ -44,17 +44,16 @@ public class ClimbCommand extends Command {
                     return;
                 }
             } else if (climbArmedState && autoClimbed) {
-                if (armClimb.getAsBoolean()) {
-                    climbSubsystem.setPosition(20); //placeholder pre climb position
-                    autoClimbed = false;
-                    return;
-                }
+                climbSubsystem.setPosition(20); //placeholder pre climb position
+                autoClimbed = false;
+                return;
             }
         }
     }
 
     public void autoPhaseArmClimb() {
         climbSubsystem.setPosition(20);//placeholder pre climb position
+        climbArmedState = true;
     }
 
     public void autoPhaseClimb() {
