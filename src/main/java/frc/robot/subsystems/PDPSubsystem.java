@@ -28,11 +28,17 @@ public class PDPSubsystem extends SubsystemBase {
         // Temperature
         SmartDashboard.putNumber("PDP Temperature", pdp.getTemperature());
 
-        // Individual channel currents (0–15)
-        for (int channel = 0; channel < 9; channel++) {
+        for (int channel = 0; channel < 5; channel++) {
             SmartDashboard.putNumber(
                 "PDP Channel " + channel + " Current",
                 pdp.getCurrent(channel)
+            );
+        }
+
+        for (int channel2 = 12; channel2 < 16; channel2++) {
+            SmartDashboard.putNumber(
+                "PDP Channel " + channel2 + " Current",
+                pdp.getCurrent(channel2)
             );
         }
     }
