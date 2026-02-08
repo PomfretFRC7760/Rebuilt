@@ -31,7 +31,7 @@ public class PDPSubsystem extends SubsystemBase {
         // Individual channel currents (0–15)
         for (int channel = 0; channel < 9; channel++) {
             SmartDashboard.putNumber(
-                "PDP Channel " + channel++ + " Current",
+                "PDP Channel " + channel + " Current",
                 pdp.getCurrent(channel)
             );
         }
