@@ -157,6 +157,8 @@ public class DriveSubsystem extends SubsystemBase {
         driveTable.getEntry("pose_y").setDouble(robotPose.getY());
         driveTable.getEntry("pose_heading_deg")
                 .setDouble(robotPose.getRotation().getDegrees());
+        driveTable.getEntry("pose_heading_rad")
+                .setDouble(robotPose.getRotation().getRadians());
 
         // Robot-relative speeds
         ChassisSpeeds speeds = getRobotRelativeSpeeds();
@@ -164,6 +166,12 @@ public class DriveSubsystem extends SubsystemBase {
                 .setDouble(speeds.vxMetersPerSecond);
         driveTable.getEntry("omega_radps")
                 .setDouble(speeds.omegaRadiansPerSecond);
+        driveTable.getEntry("RobotPose").setDoubleArray(new double[]{
+            robotPose.getX(),                      // meters
+            robotPose.getY(),                      // meters
+            robotPose.getRotation().getDegrees()   // heading in radians
+        });
+
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {

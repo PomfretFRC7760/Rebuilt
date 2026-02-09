@@ -35,8 +35,8 @@
           },
           {
             "title": "FMSInfo",
-            "x": 1232.0,
-            "y": 280.0,
+            "x": 896.0,
+            "y": 784.0,
             "width": 392.0,
             "height": 168.0,
             "type": "FMSInfo",
@@ -46,27 +46,9 @@
             }
           },
           {
-            "title": "PDP Voltage",
-            "x": 1232.0,
-            "y": 0.0,
-            "width": 280.0,
-            "height": 168.0,
-            "type": "Voltage View",
-            "properties": {
-              "topic": "/SmartDashboard/PDP Voltage",
-              "period": 0.06,
-              "data_type": "double",
-              "min_value": 4.0,
-              "max_value": 13.0,
-              "divisions": 5,
-              "inverted": false,
-              "orientation": "horizontal"
-            }
-          },
-          {
             "title": "Auto Chooser",
-            "x": 1232.0,
-            "y": 168.0,
+            "x": 896.0,
+            "y": 672.0,
             "width": 280.0,
             "height": 112.0,
             "type": "ComboBox Chooser",
@@ -95,6 +77,24 @@
               "robot_color": 4294198070,
               "trajectory_color": 4294967295,
               "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "Voltage",
+            "x": 896.0,
+            "y": 504.0,
+            "width": 280.0,
+            "height": 168.0,
+            "type": "Voltage View",
+            "properties": {
+              "topic": "/SmartDashboard/PDP/Voltage",
+              "period": 0.06,
+              "data_type": "double",
+              "min_value": 4.0,
+              "max_value": 13.0,
+              "divisions": 5,
+              "inverted": false,
+              "orientation": "horizontal"
             }
           }
         ]

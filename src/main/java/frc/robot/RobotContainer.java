@@ -86,7 +86,7 @@ public class RobotContainer {
 
     hoodSubsystem.setDefaultCommand(hoodPosition);
 
-    gyroCommand = new GyroCommand(gyroSubsystem, () -> driverController.getBackButtonPressed());
+    gyroCommand = new GyroCommand(gyroSubsystem, () -> driverController.getBackButtonPressed(), () -> driverController.getLeftBumperButton());
     
     gyroSubsystem.setDefaultCommand(gyroCommand.ignoringDisable(true));
 
