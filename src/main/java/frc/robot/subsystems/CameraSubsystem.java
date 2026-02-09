@@ -19,7 +19,7 @@ public class CameraSubsystem extends SubsystemBase {
         // Limelight MJPEG stream
         limelightCamera = new HttpCamera(
                 "Limelight",
-                "http://10.77.60.200:5800/"
+                "http://10.77.60.201:5800/"
         );
 
         CameraServer.addCamera(limelightCamera);

@@ -4,8 +4,11 @@ import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -13,6 +16,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPLTVController;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -34,6 +42,9 @@ public class DriveSubsystem extends SubsystemBase {
     private static final double WHEEL_DIAMETER = 0.1524;
     private static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     private static final double GEAR_RATIO = 8.46;
+
+    private final Field2d field = new Field2d();
+    private final NetworkTable driveTable = NetworkTableInstance.getDefault().getTable("Drive");   
 
     private final DifferentialDriveKinematics kinematics =
             new DifferentialDriveKinematics(TRACK_WIDTH);
@@ -92,6 +103,8 @@ public class DriveSubsystem extends SubsystemBase {
         );
 
         setupPathPlanner();
+
+        SmartDashboard.putData("Field", field);
     }
 
     private void setupPathPlanner() {
@@ -135,7 +148,22 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateOdometry();
-        SmartDashboard.putString("Pose", robotPose.toString());
+
+        // Update Field2d
+        field.setRobotPose(robotPose);
+
+        // Raw pose values (great for graphs/debug)
+        driveTable.getEntry("pose_x").setDouble(robotPose.getX());
+        driveTable.getEntry("pose_y").setDouble(robotPose.getY());
+        driveTable.getEntry("pose_heading_deg")
+                .setDouble(robotPose.getRotation().getDegrees());
+
+        // Robot-relative speeds
+        ChassisSpeeds speeds = getRobotRelativeSpeeds();
+        driveTable.getEntry("vx_mps")
+                .setDouble(speeds.vxMetersPerSecond);
+        driveTable.getEntry("omega_radps")
+                .setDouble(speeds.omegaRadiansPerSecond);
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
