@@ -14,5 +14,5 @@
     - [x] Robot position from Apriltags
     - [x] Rotate to target
     - [x] Calculate shot angle and distance
-- [ ] Elastic dashboard for better telemetry
+- [x] Elastic dashboard for better telemetry
 - [ ] AdvantageKit logging
