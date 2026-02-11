@@ -28,6 +28,11 @@ public class FuelIntakeAndShoot extends Command {
     @Override
     public void execute() {
 
+        if (!intakeButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
+            shooterSubsystem.stop();
+            return;
+        }
+
         if (intakeButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
             shooterSubsystem.intake();
             return;
