@@ -91,7 +91,7 @@ public class RobotContainer {
     gyroSubsystem.setDefaultCommand(gyroCommand.ignoringDisable(true));
 
     fuelIntakeAndShoot = new FuelIntakeAndShoot(intakeAndShooterSubsystem, visionSubsystem, () -> driverController.getLeftTriggerAxis(), 
-    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getLeftBumperButton());
+    () -> driveCommand.isPassingMode(), () -> driverController.getRightTriggerAxis(), () -> driverController.getLeftBumperButton(), () -> driverController.getRightBumperButton());
 
     intakeAndShooterSubsystem.setDefaultCommand(fuelIntakeAndShoot);
   }

@@ -14,26 +14,33 @@ public class FuelIntakeAndShoot extends Command {
     private final BooleanSupplier passingModeState;
     private final DoubleSupplier shootTrigger;
     private final BooleanSupplier intakeButton;
+    private final BooleanSupplier ejectButton;
 
     public FuelIntakeAndShoot(IntakeAndShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem,
-                        DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger, BooleanSupplier intakeButton) {
+                        DoubleSupplier aimTrigger, BooleanSupplier passingModeState, DoubleSupplier shootTrigger, BooleanSupplier intakeButton, BooleanSupplier ejectButton) {
         this.shooterSubsystem = shooterSubsystem;
         this.visionSubsystem = visionSubsystem;
         this.aimTrigger = aimTrigger;
         this.passingModeState = passingModeState;
         this.shootTrigger = shootTrigger;
         this.intakeButton = intakeButton;
+        this.ejectButton = ejectButton;
         addRequirements(shooterSubsystem, visionSubsystem);
     }
     @Override
     public void execute() {
 
-        if (!intakeButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
+        if (!intakeButton.getAsBoolean() && !ejectButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
             shooterSubsystem.stop();
             return;
         }
 
-        if (intakeButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
+        if (!intakeButton.getAsBoolean() && ejectButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
+            shooterSubsystem.eject();
+            return;
+        }
+
+        if (intakeButton.getAsBoolean() && !ejectButton.getAsBoolean() && shootTrigger.getAsDouble() < 0.75 && aimTrigger.getAsDouble() < 0.75) {
             shooterSubsystem.intake();
             return;
         }
