@@ -52,7 +52,7 @@ public class IntakeAndShooterSubsystem extends SubsystemBase {
         rightController.setSetpoint(-1500,SparkFlex.ControlType.kVelocity);
     }
     public void eject(){
-        indexer.set(-100);
+        indexer.set(100);
         leftController.setSetpoint(2000,SparkFlex.ControlType.kVelocity);
         rightController.setSetpoint(2000,SparkFlex.ControlType.kVelocity);
     }
